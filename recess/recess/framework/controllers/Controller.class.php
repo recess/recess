@@ -93,6 +93,18 @@ abstract class Controller extends AbstractController {
 		// First check to see if this is a urlTo on another Controller Class
 		if(strpos($methodName,'::') !== false) {
 		    return call_user_func_array(array($this->application,'urlTo'),$args);
+		}		
+    
+    // Check to see if this urlTo contains args in the methodName
+		// Ignores keys, assuming params are in the proper order.
+		// Ex. $controller->urlTo("details?id=43")
+		if(strpos($methodName,'?') !== false) {
+		    list($methodName, $params) = explode('?', $methodName, 2);
+			$args = empty($args)? explode('&',$params) : $args;
+			foreach($args as $i => $arg) {
+				$val = strpos($arg, '=') !== false ? substr($arg,strrpos($arg, '=')+1) : $arg;
+				$args[$i] = $val;
+			}
 		}
 		
 		array_shift($args);
