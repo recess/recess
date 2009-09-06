@@ -33,7 +33,7 @@ class HasManyRelationship extends Relationship {
 		}
 	}
 	
-	function attachMethodsToModelDescriptor(ModelDescriptor &$descriptor) {
+	function attachMethodsToModelDescriptor(ModelDescriptor $descriptor) {
 		$alias = $this->name;
 		$attachedMethod = new AttachedMethod($this,'selectModel', $alias);
 		$descriptor->addAttachedMethod($alias, $attachedMethod);

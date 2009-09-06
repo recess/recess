@@ -20,7 +20,7 @@ class DefaultPolicy implements IPolicy {
 	 * @param	Request The Request to refine.
 	 * @return	Request The refined Request.
 	 */
-	public function preprocess(Request &$request) {
+	public function preprocess(Request $request) {
 		$this->getHttpMethodFromPost($request);
 
 		$this->forceFormatFromResourceString($request);
@@ -28,7 +28,7 @@ class DefaultPolicy implements IPolicy {
 		return $request;
 	}
 	
-	public function getControllerFor(Request &$request, RtNode $routes) {
+	public function getControllerFor(Request $request, RtNode $routes) {
 		$routeResult = $routes->findRouteFor($request);
 		
 		if($routeResult->routeExists) {
@@ -47,7 +47,7 @@ class DefaultPolicy implements IPolicy {
 		return $controller;
 	}
 	
-	public function getViewFor(Response &$response) {
+	public function getViewFor(Response $response) {
 		// TODO: When version 0.3 is released, remove this conditional
 		// 		 and break backwards compatibility with versions <= 0.12
 		if(!isset($response->meta->respondWith) || empty($response->meta->respondWith)) {
@@ -99,7 +99,7 @@ class DefaultPolicy implements IPolicy {
 
 	const HTTP_METHOD_FIELD = '_METHOD';
 
-	protected function getHttpMethodFromPost(Request &$request) {
+	protected function getHttpMethodFromPost(Request $request) {
 		if(array_key_exists(self::HTTP_METHOD_FIELD, $request->post)) {
 			$request->method = $request->post[self::HTTP_METHOD_FIELD];
 			unset($request->post[self::HTTP_METHOD_FIELD]);
@@ -110,7 +110,7 @@ class DefaultPolicy implements IPolicy {
 		return $request;
 	}
 
-	protected function forceFormatFromResourceString(Request &$request) {
+	protected function forceFormatFromResourceString(Request $request) {
 		$lastPartIndex = count($request->resourceParts) - 1;
 		if($lastPartIndex < 0) return $request;
 		
@@ -133,7 +133,7 @@ class DefaultPolicy implements IPolicy {
 
 	// @Todo: Worry about the "input" problem. This isn't based on the format
 	//			but rather it is based on the content-type of the entity.
-	protected function reparameterizeForFormat(Request &$request) {
+	protected function reparameterizeForFormat(Request $request) {
 		if($request->format == Formats::JSON) {
 			$method = strtolower($request->method);
 			$request->$method = json_decode($request->input, true);
@@ -143,7 +143,7 @@ class DefaultPolicy implements IPolicy {
 		return $request;
 	}
 	
-	protected function getControllerFromRouteResult(Request &$request, RoutingResult $routeResult) {
+	protected function getControllerFromRouteResult(Request $request, RoutingResult $routeResult) {
 		$request->meta->app = $routeResult->route->app;
 		$request->meta->controllerMethod = $routeResult->route->function;
 		$request->meta->controllerMethodArguments = $routeResult->arguments;
