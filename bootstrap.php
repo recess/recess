@@ -151,8 +151,11 @@ abstract class RecessConf {
 			}
 		}
 		
-		Library::import('recess.framework.DefaultPolicy');
-		self::$policy = new DefaultPolicy();
+		// Allow custom policies
+		if(null === self::$policy) {
+			Library::import('recess.framework.DefaultPolicy');
+			self::$policy = new DefaultPolicy();
+		}
 	}
 	
 	const ROUTES_CACHE_KEY = 'Recess::Routes';
