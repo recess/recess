@@ -18,7 +18,7 @@ class Response {
 	
 	protected $cookies = array();
 	
-	public function __construct(Request $request, $code, $data = '') {
+	public function __construct(Request $request, $code, $data = array()) {
 		$this->request = $request;
 		$this->code = $code;
 		$this->data = $data;
