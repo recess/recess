@@ -203,13 +203,20 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 	}
 	
 	/**
-	 * Drop a table from Postgresql database.
+	 * Drop a table from Postgresql database and clear any sequences as well.
 	 *
 	 * @param string $table Name of table.
 	 */
 	function dropTable($table) {
+		$results = $this->pdo->query('SELECT sequence_name
+                                        FROM information_schema.sequences
+                                        WHERE sequence_name LIKE \''.$table.'_%\'');
 
-		return $this->pdo->exec('DROP TABLE ' . $table);
+        $this->pdo->exec('DROP TABLE ' . $table);
+        foreach($results as $result) {
+            $this->pdo->exec('DROP SEQUENCE '.$result['sequence_name']);
+        }
+
 	}
 	
 	/**
