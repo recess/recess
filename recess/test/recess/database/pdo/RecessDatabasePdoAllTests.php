@@ -1,8 +1,9 @@
 <?php
 require_once 'PHPUnit/Framework.php';
 require_once 'recess/database/pdo/PdoDataSetTestMysql.php';
-require_once 'recess/database/pdo/PdoDataSetTestSqlite.php';
-require_once 'recess/database/pdo/SqlitePdoDataSourceProviderTest.php';
+//require_once 'recess/database/pdo/PdoDataSetTestSqlite.php';
+require_once 'recess/database/pdo/PdoDataSetTestPgsql.php';
+//require_once 'recess/database/pdo/SqlitePdoDataSourceProviderTest.php';
 
 class RecessDatabasePdoAllTests
 {
@@ -10,10 +11,10 @@ class RecessDatabasePdoAllTests
     {
         $suite = new PHPUnit_Framework_TestSuite('recess.database.pdo');
         
-        $suite->addTestSuite('SqlitePdoDataSourceProviderTest');
-        
-       	$suite->addTestSuite('PdoDataSetTestSqlite');
- 		$suite->addTestSuite('PdoDataSetTestMysql');
+ //       $suite->addTestSuite('SqlitePdoDataSourceProviderTest');
+        $suite->addTestSuite('PdoDataSetTestPgsql');
+//       	$suite->addTestSuite('PdoDataSetTestSqlite');
+ 	$suite->addTestSuite('PdoDataSetTestMysql');
 
         return $suite;
     }

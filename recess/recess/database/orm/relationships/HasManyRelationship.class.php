@@ -85,7 +85,6 @@ class HasManyRelationship extends Relationship {
 			return $model;
 		} else {
 			$through = new $this->through;
-			
 			$localPrimaryKey = Model::primaryKeyName($model);
 			$localForeignKey = $this->foreignKey;
 			$through->$localForeignKey = $model->$localPrimaryKey;
@@ -141,7 +140,7 @@ class HasManyRelationship extends Relationship {
 		
 		if(isset($this->through)) {
 			$modelPk = Model::primaryKeyName($model);
-			$queryBuilder = new SqlBuilder();
+			$queryBuilder = $model->sourceFor($model)->getBuilder();
 			$queryBuilder
 				->from(Model::tableFor($this->through))
 				->equal($this->foreignKey, $model->$modelPk);
@@ -161,7 +160,7 @@ class HasManyRelationship extends Relationship {
 			$relatedClass = $this->through;
 		}
 		
-		$queryBuilder = new SqlBuilder();
+		$queryBuilder = $model->sourceFor($model)->getBuilder();
 		$queryBuilder
 			->from(Model::tableFor($relatedClass))
 			->equal($this->foreignKey, $model->$modelPk);
@@ -178,7 +177,7 @@ class HasManyRelationship extends Relationship {
 		
 		$modelPk = Model::primaryKeyName($model);
 		
-		$queryBuilder = new SqlBuilder();
+		$queryBuilder = $model->sourceFor($model)->getBuilder();
 		$queryBuilder
 			->from(Model::tableFor($this->foreignClass))
 			->assign($this->foreignKey, null)

@@ -55,7 +55,12 @@ class PdoDataSource extends PDO {
 		
 		$this->provider = $this->instantiateProvider();
 	}
-	
+
+	/* XXX get the custom builder, provider is protected so we need this method */
+	function getBuilder() {
+		return $this->provider->getBuilder();
+	}
+
 	/**
 	 * Locate the pdo driver specific data source provider, instantiate, and return.
 	 * Throws ProviderDoesNotExistException for a pdo driver without a Recess provider.

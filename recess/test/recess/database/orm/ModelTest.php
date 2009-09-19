@@ -105,7 +105,8 @@ abstract class ModelTest extends PHPUnit_Extensions_Database_TestCase {
   function getDataSet() {
    Databases::setDefaultSource($this->source);
    Object::clearDescriptors();
-   return $this->createXMLDataSet('recess/database/orm/sample-data.xml');
+   $x = $this->createXMLDataSet('recess/database/orm/sample-data.xml');
+   return $x;
   }
 	
   function tearDown() {
@@ -117,7 +118,7 @@ abstract class ModelTest extends PHPUnit_Extensions_Database_TestCase {
    $page = $page->equal('id',1)->first();
    $this->assertEquals($page->children()->count(), 1);
    $this->assertEquals($page->parent(), false);
-   $this->assertEquals($page->children()->equal('title','Child 1')->count(), 1);
+   $this->assertEquals($page->children()->equal('Title','Child 1')->count(), 1);
   }
   
   function testAll() {
@@ -144,7 +145,7 @@ abstract class ModelTest extends PHPUnit_Extensions_Database_TestCase {
    $car->isDriveable = true;
    $car->insert();
    $carId = $car->pk;
-   
+
    $car = new Car();
    $car->pk = $carId;
    $driveable =  $car->find()->first()->isDriveable;
@@ -252,14 +253,14 @@ abstract class ModelTest extends PHPUnit_Extensions_Database_TestCase {
   }
   
   function testUpdate() {
-   $people = Make::a('Person')->all();
+   $people = Make::a('Person')->all()->orderBy('id');
    $person = $people[0];
    $name = $person->firstName;
    
    $person->firstName = 'UPDATE!';
    $person->update();
    
-   $people = Make::a('Person')->all();
+   $people = Make::a('Person')->all()->orderBy('id');
    
    $this->assertEquals($person->firstName, $people[0]->firstName);
   }
@@ -333,7 +334,6 @@ abstract class ModelTest extends PHPUnit_Extensions_Database_TestCase {
    
    $book = Make::a('Book')->like('title', '%Audacity%')->first();
    $barack->removeFromBooks($book);
-   
    $this->assertEquals(count($barack->books()), $barackBooksCount - 1);
   }
   

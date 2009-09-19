@@ -1,7 +1,9 @@
 <?php
 require_once 'PHPUnit/Framework.php';
-require_once 'recess/database/sql/SqlBuilderTest.php';
-require_once 'recess/database/sql/SelectSqlBuilderTest.php';
+require_once 'recess/database/sql/MySqlBuilderTest.php';
+require_once 'recess/database/sql/PgSqlBuilderTest.php';
+require_once 'recess/database/sql/SelectMySqlBuilderTest.php';
+require_once 'recess/database/sql/SelectPgSqlBuilderTest.php';
 
 class RecessDatabaseSqlAllTests
 {
@@ -9,8 +11,10 @@ class RecessDatabaseSqlAllTests
     {
         $suite = new PHPUnit_Framework_TestSuite('recess.database.sql');
 
-        $suite->addTestSuite('SqlBuilderTest');
- 		$suite->addTestSuite('SelectSqlBuilderTest');
+        $suite->addTestSuite('MySqlBuilderTest');
+        $suite->addTestSuite('PgSqlBuilderTest');
+	$suite->addTestSuite('SelectMySqlBuilderTest');
+	$suite->addTestSuite('SelectPgSqlBuilderTest');
  		
         return $suite;
     }

@@ -1,6 +1,10 @@
 <?php
 Library::import('recess.database.pdo.IPdoDataSourceProvider');
 Library::import('recess.database.pdo.RecessType');
+Library::import('recess.database.sql.MySqlBuilder');
+Library::import('recess.database.sql.ISqlSelectOptions');
+Library::import('recess.database.sql.ISqlConditions');
+
 
 /**
  * MySql Data Source Provider
@@ -23,6 +27,15 @@ class MysqlDataSourceProvider implements IPdoDataSourceProvider {
 	 */
 	function init(PDO $pdo) {
 		$this->pdo = $pdo;
+	}
+
+    /**
+     * Each DataSourceProvider is responsible for it's own SqlBuilder.
+     *
+     * @return SqlBuilder The SqlBuilder able to construct correct queries
+     */
+	function getBuilder() {
+		return new MySqlBuilder();
 	}
 	
 	/**

@@ -685,12 +685,11 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 		if($string == '*' || strpos($string, '"') !== false) {
 			return $string;
 		}
-		if(strpos($string,Library::dotSeparator) !== false) { // Todo: Replace with Regexp
-			$parts = explode(Library::dotSeparator, $string);
-			if(isset($parts[1]) && $parts[1] == '*') {
-				return '"' . $parts[0] . '".*';
+        if(preg_match('/^(.*)\\'.Library::dotSeparator.'(.*)$/', $string, $parts)) {
+			if(isset($parts[2]) && $parts[2] == '*') {
+				return '"' . $parts[1] . '".*';
 			} else {
-				return '"' . implode('"."', $parts) . '"';
+				return '"' . $parts[1] . '"."' . $parts[2] . '"';
 			}
 		} else {
 			return '"' . $string . '"';

@@ -12,8 +12,8 @@ class RecessDatabaseAllTests
         $suite = new PHPUnit_Framework_TestSuite('recess.database');
 
         $suite->addTestSuite(RecessDatabaseSqlAllTests::suite());
- 		$suite->addTestSuite(RecessDatabasePdoAllTests::suite());
- 		$suite->addTestSuite(RecessDatabaseOrmAllTests::suite());
+ 	$suite->addTestSuite(RecessDatabasePdoAllTests::suite());
+ 	$suite->addTestSuite(RecessDatabaseOrmAllTests::suite());
  		
         return $suite;
     }

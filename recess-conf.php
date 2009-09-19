@@ -21,6 +21,8 @@ RecessConf::$mode = RecessConf::DEVELOPMENT;
 RecessConf::$applications 
 	= array(	'recess.apps.tools.RecessToolsApplication',
 				'welcome.WelcomeApplication',
+'pgtest.PgtestApplication',
+'woot.WootApplication'
 			);
 
 RecessConf::$defaultTimeZone = 'America/New_York';
@@ -28,6 +30,7 @@ RecessConf::$defaultTimeZone = 'America/New_York';
 RecessConf::$defaultDatabase
 	= array(	//'sqlite:' . $_ENV['dir.bootstrap'] . 'data/sqlite/default.db'
 				//'mysql:host=localhost;dbname=DBNAME', 'USER', 'PASS'
+			'pgsql:host=localhost;dbname=recess','postgres',''
 			);
 
 RecessConf::$namedDatabases

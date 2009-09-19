@@ -7,7 +7,6 @@ Library::import('recess.lang.Annotation');
 Library::import('recess.database.Databases');
 Library::import('recess.database.sql.ISqlConditions');
 Library::import('recess.database.orm.ModelClassInfo');
-Library::import('recess.database.sql.SqlBuilder');
 
 Library::import('recess.database.orm.annotations.HasManyAnnotation', true);
 Library::import('recess.database.orm.annotations.BelongsToAnnotation', true);
@@ -242,18 +241,20 @@ abstract class Model extends Object implements ISqlConditions {
 	 * @return SqlBuilder
 	 */
 	protected function assignmentSqlForThisObject(ModelDescriptor $descriptor, $useAssignment = true, $excludePrimaryKey = false) {
-		$sqlBuilder = new SqlBuilder();
+		$sqlBuilder = $descriptor->getSource()->getBuilder();
 		$sqlBuilder->from($descriptor->getTable());
 		
 		if(empty($descriptor->columns)) {
 			throw new RecessException('The "' . $descriptor->getTable() . '" table does not appear to exist in your database.', get_defined_vars());
 		}
-		
+
+        // We need the details to pass the column data type to assign()
+        $columnDetails = $descriptor->getSource()->getTableDescriptor($descriptor->getTable())->getColumns();
 		foreach($this as $column => $value) {
 			if($excludePrimaryKey && $descriptor->primaryKey == $column) continue;
 			if(in_array($column, $descriptor->columns) && isset($value)) {
 				if($useAssignment) {
-					$sqlBuilder->assign($column,$value);
+					$sqlBuilder->assign($column,$value,$columnDetails[$column]->type);
 				} else {
 					$sqlBuilder->equal($column,$value);
 				}
@@ -299,7 +300,10 @@ abstract class Model extends Object implements ISqlConditions {
 		
 	 	$primaryKey = $thisClassDescriptor->primaryKey;
 	 	
-	 	$this->$primaryKey = $thisClassDescriptor->getSource()->lastInsertId();
+		/* XXX MySQL doesn't deal with sequences and ignores the argument. PgSQL
+         * needs the sequence to pull the ID from. Future.... don't know.
+         */
+	 	$this->$primaryKey = $thisClassDescriptor->getSource()->lastInsertId($thisClassDescriptor->getTable().'_'.$primaryKey.'_seq');
 	 	
 	 	return $result;
 	}

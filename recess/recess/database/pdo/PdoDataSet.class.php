@@ -1,5 +1,4 @@
 <?php
-Library::import('recess.database.sql.SqlBuilder');
 Library::import('recess.database.sql.ISqlSelectOptions');
 Library::import('recess.database.sql.ISqlConditions');
 
@@ -70,7 +69,7 @@ class PdoDataSet implements Iterator, Countable, ArrayAccess, ISqlSelectOptions,
 	 * @param PdoDataSource $source
 	 */
 	public function __construct(PdoDataSource $source) {
-		$this->sqlBuilder = new SqlBuilder();
+		$this->sqlBuilder = $source->getBuilder();
 		$this->source = $source;
 	}
 	
