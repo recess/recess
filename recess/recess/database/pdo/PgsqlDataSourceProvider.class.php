@@ -7,7 +7,15 @@ Library::import('recess.database.sql.ISqlConditions');
 
 
 /**
- * Pgsql Data Source Provider
+ * Pgsql Data Source Provider.
+ *
+ * PostgreSQL doesn't have an auto_increment option so we must create sequences
+ * to support that funtionality. Our sequence format is:
+ *
+ *      {table_name}_{column_name}_seq
+ *
+ * This should give us unique sequences to track as we add auto_increment columns
+ * and drop tables and columns.
  * 
  * @author Kris Jordan <krisjordan@gmail.com>
  * @contributor Ryan Day <ryanday2@gmail.com>
@@ -204,6 +212,7 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 	
 	/**
 	 * Drop a table from Postgresql database and clear any sequences as well.
+     * Sequences must follow the {table_name}_{column_name}_seq format.
 	 *
 	 * @param string $table Name of table.
 	 */
