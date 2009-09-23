@@ -266,7 +266,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param mixed $value
 	 * @return SqlBuilder
 	 */
-	public function equal($column, $value)       { return $this->addCondition(self::escapeWithTicks($column), $value, $value ? Criterion::EQUAL_TO : Criterion::IS_NULL); }
+	public function equal($column, $value)       { return $this->addCondition(self::escapeWithTicks($column), $value, is_null($value) ? Criterion::IS_NULL : Criterion::EQUAL_TO); }
 	
 	/**
 	 * Inequality than expression for WHERE clause of update, delete, or select statements.
@@ -275,7 +275,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param mixed $value
 	 * @return SqlBuilder
 	 */
-	public function notEqual($column, $value)    { return $this->addCondition(self::escapeWithTicks($column), $value, $value ? Criterion::NOT_EQUAL_TO : Criterion::IS_NOT_NULL); }
+	public function notEqual($column, $value)    { return $this->addCondition(self::escapeWithTicks($column), $value, is_null($value) ? Criterion::IS_NOT_NULL : Criterion::NOT_EQUAL_TO); }
 	
 	/**
 	 * Shortcut alias for SqlBuilder->lessThan($column,$big)->greaterThan($column,$small) 

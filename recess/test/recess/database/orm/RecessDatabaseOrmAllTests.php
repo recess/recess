@@ -2,7 +2,7 @@
 require_once 'PHPUnit/Framework.php';
 require_once 'recess/database/orm/ModelTestMysql.php';
 require_once 'recess/database/orm/ModelTestPgsql.php';
-//require_once 'recess/database/orm/ModelTestSqlite.php';
+require_once 'recess/database/orm/ModelTestSqlite.php';
 
 class RecessDatabaseOrmAllTests
 {
@@ -12,7 +12,7 @@ class RecessDatabaseOrmAllTests
         
         $suite->addTestSuite('ModelTestMysql');
         $suite->addTestSuite('ModelTestPgsql');
-//        $suite->addTestSuite('ModelTestSqlite');
+        $suite->addTestSuite('ModelTestSqlite');
 
         return $suite;
     }

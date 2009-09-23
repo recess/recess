@@ -18,7 +18,14 @@ class SqliteDataSourceProvider implements IPdoDataSourceProvider {
 	function init(PDO $pdo) {
 		$this->pdo = $pdo;
 	}
-	
+    /**
+     * Each DataSourceProvider is responsible for it's own SqlBuilder.
+     *
+     * @return SqlBuilder The SqlBuilder able to construct correct queries
+     */
+	function getBuilder() {
+		return new MySqlBuilder();
+	}
 	/**
 	 * List the tables in a data source.
 	 * @return array(string) The tables in the data source ordered alphabetically.
