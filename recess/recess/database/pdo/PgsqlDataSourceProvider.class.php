@@ -60,7 +60,6 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 			$tables[] = $result[0];
 		}
 		
-		//sort($tables);
 		return $tables;
 	}
 	
@@ -81,8 +80,6 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 		foreach($results as $result) {
 			$columns[] = $result['column_name'];
 		}
-		
-		//sort($columns);
 		
 		return $columns;
 	}
@@ -183,8 +180,8 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 			
 				'year' => RecessType::INTEGER,
 				'date' => RecessType::DATE,
-//				'timestamp' => RecessType::DATETIME,
-				'timestamp' => RecessType::TIMESTAMP,
+				'timestamp' => RecessType::DATETIME,
+//				'timestamp' => RecessType::TIMESTAMP,
 				'time' => RecessType::TIME,
 			); 
 		}
@@ -198,13 +195,13 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				RecessType::BLOB => 'BLOB',
 				RecessType::BOOLEAN => 'BOOLEAN',
 				RecessType::DATE => 'DATE',
-				//RecessType::DATETIME => 'timestamp',
+				RecessType::DATETIME => 'timestamp',
 				RecessType::FLOAT => 'FLOAT',
 				RecessType::INTEGER => 'INTEGER',
 				RecessType::STRING => 'VARCHAR(255)',
 				RecessType::TEXT => 'TEXT',
 				RecessType::TIME => 'TIME',
-				RecessType::TIMESTAMP => 'TIMESTAMP',
+//				RecessType::TIMESTAMP => 'TIMESTAMP',
 			);
 		}
 		return self::$recessToPostgresqlMappings;
@@ -364,7 +361,7 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 					$result->$column = strtotime($result->$column);
 				}
 				foreach($timeColumns as $column) {
-					$result->$column = strtotime('1970-01-01 ' . $result->$column);
+					$result->$column = strtotime($result->$column);
 				}
 				$results[] = $result;
 			}
