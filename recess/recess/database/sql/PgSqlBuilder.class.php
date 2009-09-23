@@ -115,6 +115,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
          * actual column type isn't a string. So we catch that and make the
          * values what I think they should be. Is this the best place to do that?
          */
+		
         if($value=='') {
             switch( strtolower($type) ) {
                 case 'integer': $value = null; break;

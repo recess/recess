@@ -183,6 +183,8 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				'timestamp' => RecessType::DATETIME,
 //				'timestamp' => RecessType::TIMESTAMP,
 				'time' => RecessType::TIME,
+			
+				'point' => RecessType::POINT,
 			); 
 		}
 
@@ -202,6 +204,7 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				RecessType::TEXT => 'TEXT',
 				RecessType::TIME => 'TIME',
 //				RecessType::TIMESTAMP => 'TIMESTAMP',
+				RecessType::POINT => 'POINT',
 			);
 		}
 		return self::$recessToPostgresqlMappings;
@@ -331,6 +334,9 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 						case 'time':
 							$timeColumns[] = $meta['name'];
 							break;
+						case 'point':
+							$geoColumns[] = $meta['name'];
+							break;
             		}
 				} else {
 					if($meta['len'] == 1) {
@@ -342,7 +348,8 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 			if(	!empty($booleanColumns) || 
 				!empty($datetimeColumns) || 
 				!empty($dateColumns) || 
-				!empty($timeColumns)) {
+				!empty($timeColumns) ||
+				!empty($geoColumns)) {
 				$manualFetch = true;
 			}
 		} catch(PDOException $e) {
@@ -362,6 +369,15 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				}
 				foreach($timeColumns as $column) {
 					$result->$column = strtotime($result->$column);
+				}
+				foreach($geoColumns as $column) {
+					$matches = array();
+					preg_match('/^\((.*),(.*)\)$/', $result->$column, $matches);
+					if( count($matches) == 3 ) {
+						$result->$column = array('latlong'=>$matches[0],
+													'latitude'=>$matches[1],
+													'longitude'=>$matches[2]);
+					}
 				}
 				$results[] = $result;
 			}
@@ -390,7 +406,7 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
              */
             $column = trim($column, '"');
 			if(isset($tableDescriptors[$table][$column])) {
-                switch($tableDescriptors[$table][$column]->type) {
+				switch($tableDescriptors[$table][$column]->type) {
 					case RecessType::DATETIME: case RecessType::TIMESTAMP:
 						if(is_int($criterion->value)) {
 							$criterion->value = date('Y-m-d H:i:s', $criterion->value);
@@ -421,7 +437,7 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				}
 			}
 		}
-
+		
 		$sql = $builder->$action();
 		$statement = $source->prepare($sql);
 		$arguments = $builder->getPdoArguments();

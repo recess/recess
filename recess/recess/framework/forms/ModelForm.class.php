@@ -60,6 +60,9 @@ class ModelForm extends Form {
 					case RecessType::TIMESTAMP:
 						$this->inputs[$propertyName] = new DateLabelInput($inputName);
 						break;
+					case RecessType::POINT:
+						$this->inputs[$propertyName] = new PointInput($inputName);
+						break;
 					default:
 						echo $property->type;
 				}

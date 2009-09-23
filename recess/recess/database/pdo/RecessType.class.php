@@ -20,6 +20,7 @@ abstract class RecessType {
 	const DATE = 'Date';
 	const DATETIME = 'DateTime';
 	const BLOB = 'Blob';
+	const POINT = 'Point';
 	
 	private static $all;
 	
@@ -35,7 +36,8 @@ abstract class RecessType {
 							self::TIMESTAMP, 
 							self::DATETIME,
 							self::DATE,
-							self::BLOB);
+							self::BLOB,
+							self::POINT);
 		}
 		return self::$all;
 	}
