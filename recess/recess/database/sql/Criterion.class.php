@@ -30,6 +30,10 @@ class Criterion {
 	
 	const IN = ' IN ';
 	
+	//const DISTANCE = ' <-> ';
+	
+	const CONTAINS = ' @> ';
+	
 	public function __construct($column, $value, $operator, $pdoLabel = null){
 		$this->column = $column;
 		$this->value = $value;

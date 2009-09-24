@@ -355,5 +355,7 @@ class PdoDataSet implements Iterator, Countable, ArrayAccess, ISqlSelectOptions,
 	 * @return PdoDataSet
 	 */		
 	function in($lhs, $rhs) { $copy = clone $this; $copy->sqlBuilder->in($lhs,$rhs); return $copy; }
+	function contains($column, $point)	{ $copy = clone $this; $copy->sqlBuilder->contains($column, $point); return $copy; }
+	//function distance($column, $distance) { $copy = clone $this; $copy->sqlBuilder->distance($column, $distance); return $copy; }
 }
 ?>

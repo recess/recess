@@ -8,6 +8,7 @@ Library::import('recess.framework.forms.DateLabelInput');
 Library::import('recess.framework.forms.BooleanInput');
 Library::import('recess.framework.forms.HiddenInput');
 Library::import('recess.framework.forms.PointInput');
+Library::import('recess.framework.forms.BoxInput');
 
 class Form {
 	protected $name;

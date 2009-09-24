@@ -185,6 +185,7 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				'time' => RecessType::TIME,
 			
 				'point' => RecessType::POINT,
+				'box' => RecessType::BOX,
 			); 
 		}
 
@@ -205,6 +206,7 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				RecessType::TIME => 'TIME',
 //				RecessType::TIMESTAMP => 'TIMESTAMP',
 				RecessType::POINT => 'POINT',
+				RecessType::BOX => 'BOX',
 			);
 		}
 		return self::$recessToPostgresqlMappings;
@@ -324,6 +326,8 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 			$booleanColumns = array();
 			$dateColumns = array();
 			$timeColumns = array();
+			$pointColumns = array();
+			$boxColumns = array();
 			for($i = 0 ; $i < $columnCount; $i++) {
 				$meta = $statement->getColumnMeta($i);
 				if(isset($meta['native_type'])) {
@@ -335,8 +339,10 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 							$timeColumns[] = $meta['name'];
 							break;
 						case 'point':
-							$geoColumns[] = $meta['name'];
+							$pointColumns[] = $meta['name'];
 							break;
+						 case 'box':
+						 	$boxColumns[] = $meta['name'];
             		}
 				} else {
 					if($meta['len'] == 1) {
@@ -349,7 +355,8 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				!empty($datetimeColumns) || 
 				!empty($dateColumns) || 
 				!empty($timeColumns) ||
-				!empty($geoColumns)) {
+				!empty($pointColumns) ||
+				!empty($boxColumns)) {
 				$manualFetch = true;
 			}
 		} catch(PDOException $e) {
@@ -370,13 +377,24 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 				foreach($timeColumns as $column) {
 					$result->$column = strtotime($result->$column);
 				}
-				foreach($geoColumns as $column) {
+				foreach($pointColumns as $column) {
 					$matches = array();
 					preg_match('/^\((.*),(.*)\)$/', $result->$column, $matches);
 					if( count($matches) == 3 ) {
 						$result->$column = array('latlong'=>$matches[0],
 													'latitude'=>$matches[1],
 													'longitude'=>$matches[2]);
+					}
+				}
+				foreach($boxColumns as $column) {
+					$matches = array();
+					preg_match('/^\((.*),(.*)\),\((.*),(.*)\)$/', $result->$column, $matches);
+					if(count($matches) == 5) {
+						$result->$column = array('box'=>$matches[0],
+													'neLatitude'=>$matches[1],
+													'neLongitude'=>$matches[2],
+													'swLatitude'=>$matches[3],
+													'swLongitude'=>$matches[4],);
 					}
 				}
 				$results[] = $result;
@@ -452,6 +470,7 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 			if(''===$param || strpos($sql, $param) === false) { continue; } 
 			$statement->bindValue($param, $argument->value);
 		}
+
 		return $statement;
 	}
 	

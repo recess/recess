@@ -502,6 +502,9 @@ abstract class Model extends Object implements ISqlConditions {
 	 * @return PdoDataSet
 	 */
 	function in($column, $values) { return $this->select()->in($column,$values); }
+	
+	//function distance($column, $point) { return $this->select()->distance($column,$point); }
+	function contains($column, $point)	{ return $this->select()->contains($column,$point); }
 }
 
 /**

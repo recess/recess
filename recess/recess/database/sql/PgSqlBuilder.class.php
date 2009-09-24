@@ -368,7 +368,10 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	public function in($column, $value)        { return $this->addCondition(self::escapeWithTicks($column), $value, Criterion::IN); }
-	
+
+	/* XXX Until I work out polygon types correctly, we only have boxes and have to cast them as polygons to do contains */
+	public function contains($column, $point)	{return $this->addCondition('polygon('.self::escapeWithTicks($column).')', $point, Criterion::CONTAINS); }
+//	public function distance($column, $point)	{ return $this->addCondition(' (SELECT ' . self::escapeWithTicks($column), $point . ') ', Criterion::DISTANCE); }
 	
 	/**
 	 * Add a condition to the SqlBuilder statement. Additional logic here to prepend
@@ -381,14 +384,14 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	protected function addCondition($column, $value, $operator) {
-		if(strpos($column, '.') === false && strpos($column, '(') === false && !in_array($column, array_keys($this->selectAs))) {
+		if(strpos($column, '.') === false && strpos($column, '(') === false && !in_array(trim($column, '"'), array_keys($this->selectAs))) {
 			if(isset($this->table)) {
 				$column = self::escapeWithTicks($this->tableAsPrefix()) . '.' . $column;
 			} else {
 				throw new RecessException('Cannot use "' . $operator . '" operator without specifying table for column "' . $column . '".', get_defined_vars());
 			}
 		}
-				
+
 		if(isset($this->conditionsUsed[$column])) {
 			$this->conditionsUsed[$column]++;
 			$pdoLabel = $column . '_' . $this->conditionsUsed[$column];
@@ -564,16 +567,6 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	public function innerJoin($table, $tablePrimaryKey, $fromTableForeignKey) {
-/*
-		preg_match('/(.*)\.(.*)/', $tablePrimaryKey, $pri);
-		$searchTable = $pri[1];
-		$primaryKey = '"'.$pri[2].'"';
-		preg_match('/(.*)\.(.*)/', $fromTableForeignKey, $foreign);
-		$foreignTable = $foreign[1];
-		$foreignKey = '"'.$foreign[2].'"';
-		return $this->join('', Join::INNER, $table, 
-				$searchTable.'.'.$primaryKey, 
-				$foreignTable.'.'.$foreignKey);*/
 		return $this->join('', Join::INNER, $table, $tablePrimaryKey, $fromTableForeignKey);
 	}
 	

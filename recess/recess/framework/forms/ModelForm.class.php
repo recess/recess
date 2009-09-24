@@ -63,6 +63,9 @@ class ModelForm extends Form {
 					case RecessType::POINT:
 						$this->inputs[$propertyName] = new PointInput($inputName);
 						break;
+					case RecessType::BOX:
+						$this->inputs[$propertyName] = new BoxInput($inputName);
+						break;
 					default:
 						echo $property->type;
 				}
