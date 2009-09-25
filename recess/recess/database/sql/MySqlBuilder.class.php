@@ -60,7 +60,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 		$values = '(' . $values . ')';
 		
 		$sql .= $columns . ' VALUES ' . $values;
-		
+
 		return $sql;
 	}
 	

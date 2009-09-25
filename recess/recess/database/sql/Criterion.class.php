@@ -52,8 +52,9 @@ class Criterion {
 	      $value = '('.implode(',', $this->value).')';
 	      return $value;
 		}
-		
-		if(is_numeric($this->value)) {
+
+		/* Run the is_string for string values that happen to be all numbers with a leading 0 */
+		if(!is_string($this->value) && is_numeric($this->value)) {
 			return $this->value;
 		}
 		// End workaround
