@@ -72,7 +72,7 @@ abstract class AbstractView extends Object {
 	 * @param Response $response
 	 * @final
 	 */
-	protected final function sendHeadersFor(Response $response) {
+	protected function sendHeadersFor(Response $response) {
 		
 		header('HTTP/1.1 ' . ResponseCodes::getMessageForCode($response->code));
 		
@@ -92,7 +92,7 @@ abstract class AbstractView extends Object {
 		}
 		
 		flush();
-
+		
 		// TODO: Determine other headers to send here. Content-Type, Caching, Etags, ...
 	}
 
