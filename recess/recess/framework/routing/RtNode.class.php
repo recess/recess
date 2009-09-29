@@ -121,7 +121,7 @@ class RtNode {
 	 * @return RoutingResult
 	 */
 	public function findRouteFor(Request $request) {
-		$pathParts = $this->getRevesedPathParts($request->resource);
+		$pathParts = array_reverse($request->resourceParts);
 		return $this->findRouteRecursively($pathParts, count($pathParts) - 1, $request->method);
 	}
 	
@@ -221,11 +221,15 @@ class RtNode {
 	 * @param string Path to be split and reversed.
 	 */
 	private function getRevesedPathParts($path) {
-		return array_reverse(array_filter(explode('/', $path),array('RtNode','filterPath')));
-	}
-	
-	public static function filterPath($input) {
-		return trim($input) != '';
+		$parts = explode('/',$path);
+		$count = count($parts);
+		$return = array();
+		for($i = $count - 1; $i >= 0; $i--) {
+			if($parts[$i] !== '') {
+				$return[] = $parts[$i];
+			}
+		}
+		return $return;
 	}
 }
 ?>
