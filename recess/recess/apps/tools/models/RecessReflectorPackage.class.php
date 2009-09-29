@@ -22,8 +22,11 @@ class RecessReflectorPackage extends Model {
 		return $this->children()->orderBy('name ASC');
 	}
 	
-	function insert() {		
-		parent::insert();
+	/**
+	 * !Wrappable insert
+	 */
+	function wrappedInsert() {		
+		parent::wrappedInsert();
 		$dotPosition = strrpos($this->name, Library::dotSeparator);
 		
 		if($dotPosition !== false) { 
@@ -33,7 +36,7 @@ class RecessReflectorPackage extends Model {
 			$parent->name = $parentName;
 			
 			if(!$parent->exists()) {
-				$parent->insert();
+				$parent->wrappedInsert();
 			}
 			
 			$this->setParent($parent);
@@ -41,5 +44,3 @@ class RecessReflectorPackage extends Model {
 	}
 	
 }
-
-?>
