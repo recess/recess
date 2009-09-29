@@ -77,6 +77,7 @@ class RecessToolsAppsController extends Controller {
 		
 		$routesPrefix = $this->request->post['routingPrefix'];
 		if(substr($routesPrefix,-1) != '/') { $routesPrefix .= '/'; }
+		if($routesPrefix{0} === '/') { $routesPrefix = substr($routesPrefix,1); }
 		$appDir = $_ENV['dir.apps'] . $camelProgrammaticName;
 		
 		$this->messages = array();
