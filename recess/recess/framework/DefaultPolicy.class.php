@@ -2,6 +2,7 @@
 Library::import('recess.framework.controllers.Controller');
 Library::import('recess.framework.views.LayoutsView');
 Library::import('recess.framework.views.NativeView');
+Library::import('recess.framework.views.XmlView');
 Library::import('recess.framework.views.JsonView');
 Library::import('recess.framework.interfaces.IPolicy');
 Library::import('recess.framework.http.MimeTypes');

@@ -302,10 +302,15 @@ abstract class Model extends Object implements ISqlConditions {
 	 	
 		/* XXX MySQL doesn't deal with sequences and ignores the argument. PgSQL
          * needs the sequence to pull the ID from. Future.... don't know.
+         * XXX Added try/catch because if the promary key isn't set to autoincrement, then
+         * no sequence will exist. I tried checking the ->isAutoIncrement field, but that fails
+         * the unit tests while this does not.
          */
-	 	$this->$primaryKey = $thisClassDescriptor->getSource()->lastInsertId($thisClassDescriptor->getTable().'_'.$primaryKey.'_seq');
-	 	
-	 	return $result;
+		try {
+		 	$this->$primaryKey = $thisClassDescriptor->getSource()->lastInsertId($thisClassDescriptor->getTable().'_'.$primaryKey.'_seq');
+		} catch (PdoException $e) {}
+
+		return $result;
 	}
 
 	/**
