@@ -760,7 +760,7 @@ class Criterion {
 	      return $value;
 		}
 		
-		if(is_numeric($this->value)) {
+		if(is_numeric($this->value) && !is_string($this->value)) {
 			return $this->value;
 		}
 		// End workaround
