@@ -58,8 +58,13 @@ abstract class RecessConf {
 	public static $policy;
 	
 	static function init() {
-		if(self::$mode == self::PRODUCTION) {
+		if(self::$mode === self::PRODUCTION) {
 			self::$useTurboSpeed = true;
+		} else {
+			list($major,$minor,$revision) = explode('.',phpversion());
+			if(!((int)$major >= 5 && (int)$minor >= 2)) {
+				die('Recess requires PHP version 5.2.4 or greater.');
+			}
 		}
 		
 		$_ENV['dir.recess'] = self::$recessDir;
@@ -110,11 +115,6 @@ abstract class RecessConf {
 			$message .= '<strong>Next Step(s):</strong>';
 			$message .= '<ul>';
 			$pdoMessages = array();
-			
-			list($major,$minor,$revision) = explode('.',phpversion());
-			if(!((int)$major >= 5 && (int)$minor >= 2)) {
-				$pdoMessages[] = 'PHP version 5.2 or greater is required';
-			}
 			
 			if(!extension_loaded('PDO')) {
 				$pdoMessages[] = 'Install PHP\'s PDO Extension';
