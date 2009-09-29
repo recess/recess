@@ -110,6 +110,12 @@ abstract class RecessConf {
 			$message .= '<strong>Next Step(s):</strong>';
 			$message .= '<ul>';
 			$pdoMessages = array();
+			
+			list($major,$minor,$revision) = explode('.',phpversion());
+			if(!((int)$major >= 5 && (int)$minor >= 2)) {
+				$pdoMessages[] = 'PHP version 5.2 or greater is required';
+			}
+			
 			if(!extension_loaded('PDO')) {
 				$pdoMessages[] = 'Install PHP\'s PDO Extension';
 				$pdoMessages[] = 'Install Sqlite or MySQL PDO Driver';
