@@ -2,7 +2,8 @@
 Library::import('recess.framework.AbstractView');
 
 class NativeView extends AbstractView {
-	protected function getTemplateFor($response) {
+	 function getTemplateFor($response) {
+		// TODO: Cache in production mode
 		$format = $response->request->accepts->format();
 
 		if(is_string($format)) {
@@ -18,7 +19,7 @@ class NativeView extends AbstractView {
 		return $template;
 	}
 
-	public function canRespondWith(Response $response) {
+	function canRespondWith(Response $response) {
 		// TODO: Cache in production mode
 		return Application::active()->findView($this->getTemplateFor($response));
 	}
