@@ -333,7 +333,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 */
 	public function like($column, $value)        { return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::LIKE); }
 
-	public function ilike($column, $value)			{ return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCtierion::ILIKE); }
+	public function ilike($column, $value)			{ return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::ILIKE); }
 
 	/**
 	 * NOT LIKE expression for WHERE clause of update, delete, or select statements, does not include wildcards.
