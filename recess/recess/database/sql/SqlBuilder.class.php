@@ -1,6 +1,4 @@
 <?php
-Library::import('recess.database.sql.Criterion');
-
 /**
  * SqlBuilder is used to incrementally compose named-parameter PDO Sql strings
  * using a simple, chainable method call API. This is a naive wrapper that does

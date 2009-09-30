@@ -1,6 +1,6 @@
 <?php
 Library::import('recess.database.sql.MySqlBuilder');
-//Library::import('recess.database.sql.Criterion');
+
 /**
  * Unit Tests for recess.database.sql.MySqlBuilder
  * @author Kris Jordan <krisjordan@gmail.com>

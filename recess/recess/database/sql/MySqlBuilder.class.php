@@ -111,12 +111,12 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	public function assign($column, $value, $type="") {
 		if(strpos($column, '.') === false) {
 			if(isset($this->table)) {
-				$this->assignments[] = new Criterion($this->tableAsPrefix() . '.' . $column, $value, Criterion::ASSIGNMENT); 
+				$this->assignments[] = new MysqlCriterion($this->tableAsPrefix() . '.' . $column, $value, MysqlCriterion::ASSIGNMENT); 
 			} else {
 				throw new RecessException('Cannot assign without specifying table.', get_defined_vars());
 			}
 		} else {
-			$this->assignments[] = new Criterion($column, $value, Criterion::ASSIGNMENT); 
+			$this->assignments[] = new MysqlCriterion($column, $value, MysqlCriterion::ASSIGNMENT); 
 		}
 		return $this;
 	}
@@ -253,7 +253,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param mixed $value
 	 * @return SqlBuilder
 	 */
-	public function equal($column, $value)       { return $this->addCondition($column, $value, is_null($value) ? Criterion::IS_NULL : Criterion::EQUAL_TO); }
+	public function equal($column, $value)       { return $this->addCondition($column, $value, is_null($value) ? MysqlCriterion::IS_NULL : MysqlCriterion::EQUAL_TO); }
 	
 	/**
 	 * Inequality than expression for WHERE clause of update, delete, or select statements.
@@ -262,7 +262,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param mixed $value
 	 * @return SqlBuilder
 	 */
-	public function notEqual($column, $value)    { return $this->addCondition($column, $value, is_null($value) ? Criterion::IS_NOT_NULL : Criterion::NOT_EQUAL_TO); }
+	public function notEqual($column, $value)    { return $this->addCondition($column, $value, is_null($value) ? MysqlCriterion::IS_NOT_NULL : MysqlCriterion::NOT_EQUAL_TO); }
 	
 	/**
 	 * Shortcut alias for SqlBuilder->lessThan($column,$big)->greaterThan($column,$small) 
@@ -281,7 +281,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param numeric $value
 	 * @return SqlBuilder
 	 */
-	public function greaterThan($column, $value)          { return $this->addCondition($column, $value, Criterion::GREATER_THAN); }
+	public function greaterThan($column, $value)          { return $this->addCondition($column, $value, MysqlCriterion::GREATER_THAN); }
 	
 	/**
 	 * Greater than or equal to expression for WHERE clause of update, delete, or select statements.
@@ -290,7 +290,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param numeric $value
 	 * @return SqlBuilder
 	 */
-	public function greaterThanOrEqualTo($column, $value)         { return $this->addCondition($column, $value, Criterion::GREATER_THAN_EQUAL_TO); }
+	public function greaterThanOrEqualTo($column, $value)         { return $this->addCondition($column, $value, MysqlCriterion::GREATER_THAN_EQUAL_TO); }
 	
 	/**
 	 * Less than expression for WHERE clause of update, delete, or select statements.
@@ -299,7 +299,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param numeric $value
 	 * @return SqlBuilder
 	 */
-	public function lessThan($column, $value)          { return $this->addCondition($column, $value, Criterion::LESS_THAN); }
+	public function lessThan($column, $value)          { return $this->addCondition($column, $value, MysqlCriterion::LESS_THAN); }
 
 	/**
 	 * Less than or equal to expression for WHERE clause of update, delete, or select statements.
@@ -308,7 +308,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param numeric $value
 	 * @return SqlBuilder
 	 */
-	public function lessThanOrEqualTo($column, $value)         { return $this->addCondition($column, $value, Criterion::LESS_THAN_EQUAL_TO); }
+	public function lessThanOrEqualTo($column, $value)         { return $this->addCondition($column, $value, MysqlCriterion::LESS_THAN_EQUAL_TO); }
 
 	/**
 	 * LIKE expression for WHERE clause of update, delete, or select statements, does not include wildcards.
@@ -317,7 +317,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param string $value
 	 * @return SqlBuilder
 	 */
-	public function like($column, $value)        { return $this->addCondition($column, $value, Criterion::LIKE); }
+	public function like($column, $value)        { return $this->addCondition($column, $value, MysqlCriterion::LIKE); }
 	
 	/**
 	 * NOT LIKE expression for WHERE clause of update, delete, or select statements, does not include wildcards.
@@ -326,7 +326,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param string $value
 	 * @return SqlBuilder
 	 */
-	public function notLike($column, $value)        { return $this->addCondition($column, $value, Criterion::NOT_LIKE); }
+	public function notLike($column, $value)        { return $this->addCondition($column, $value, MysqlCriterion::NOT_LIKE); }
 
 	/**
 	 * IS NULL expression for WHERE clause of update, delete, or select statements
@@ -335,7 +335,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param string $value
 	 * @return SqlBuilder
 	 */
-	public function isNull($column)        { return $this->addCondition($column, null, Criterion::IS_NULL); }
+	public function isNull($column)        { return $this->addCondition($column, null, MysqlCriterion::IS_NULL); }
 	
 	/**
 	 * IS NOT NULL expression for WHERE clause of update, delete, or select statements
@@ -344,7 +344,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param string $value
 	 * @return SqlBuilder
 	 */
-	public function isNotNull($column)        { return $this->addCondition($column, null, Criterion::IS_NOT_NULL); }
+	public function isNotNull($column)        { return $this->addCondition($column, null, MysqlCriterion::IS_NOT_NULL); }
 	
 	/**
 	 * IN to expression for WHERE clause of update, delete, or select statements.
@@ -353,7 +353,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param array $value
 	 * @return SqlBuilder
 	 */
-	public function in($column, $value)        { return $this->addCondition($column, $value, Criterion::IN); }
+	public function in($column, $value)        { return $this->addCondition($column, $value, MysqlCriterion::IN); }
 	
 	
 	/**
@@ -383,7 +383,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 			$pdoLabel = null;
 		}
 		
-		$this->conditions[] = new Criterion($column, $value, $operator, $pdoLabel);
+		$this->conditions[] = new MysqlCriterion($column, $value, $operator, $pdoLabel);
 		
 		return $this;
 	}
@@ -536,7 +536,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	public function leftOuterJoin($table, $tablePrimaryKey, $fromTableForeignKey) {
-		return $this->join(Join::LEFT, Join::OUTER, $table, $tablePrimaryKey, $fromTableForeignKey);
+		return $this->join(MysqlJoin::LEFT, MysqlJoin::OUTER, $table, $tablePrimaryKey, $fromTableForeignKey);
 	}
 	
 	/**
@@ -548,7 +548,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	public function innerJoin($table, $tablePrimaryKey, $fromTableForeignKey) {
-		return $this->join('', Join::INNER, $table, $tablePrimaryKey, $fromTableForeignKey);
+		return $this->join('', MysqlJoin::INNER, $table, $tablePrimaryKey, $fromTableForeignKey);
 	}
 	
 	/**
@@ -579,7 +579,7 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 		}
 		
 		$this->select = $this->tableAsPrefix() . '.*';
-		$this->joins[] = new Join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey);	
+		$this->joins[] = new MysqlJoin($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey);	
 		return $this;
 	}
 	
@@ -712,4 +712,107 @@ class MySqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 		return $this->table;
 	}
 }
+
+
+class MysqlCriterion {
+	public $column;
+	public $pdoLabel;
+	public $value;
+	public $operator;
+	
+	const GREATER_THAN = ' > ';
+	const GREATER_THAN_EQUAL_TO = ' >= ';
+	
+	const LESS_THAN = ' < ';
+	const LESS_THAN_EQUAL_TO = ' <= ';
+	
+	const EQUAL_TO = ' = ';
+	const NOT_EQUAL_TO = ' != ';
+	
+	/* XXX This LIKE is case insensitive and will give conflicting meaning with the
+	 * postgres LIKE. I'm keeping it this way for backwards compatability.
+	 * 
+	 * If we use LIKE BINARY we get case sensitive, however for complete abstraction
+	 * we should have Recess determine whether LIKE is case sensitive or not and implement
+	 * methods to keep things standard.
+	 */
+	const LIKE = ' LIKE ';
+	const NOT_LIKE = ' NOT LIKE ';
+	
+	const IS_NULL = ' IS NULL';
+	const IS_NOT_NULL = ' IS NOT NULL';
+	
+	const COLON = ':';
+	
+	const ASSIGNMENT = '=';
+	const ASSIGNMENT_PREFIX = 'assgn_';
+	
+	const UNDERSCORE = '_';
+	
+	const IN = ' IN ';
+	
+	public function __construct($column, $value, $operator, $pdoLabel = null){
+		$this->column = $column;
+		$this->value = $value;
+		$this->operator = $operator;
+
+		if(!isset($pdoLabel)) {
+			$this->pdoLabel = preg_replace('/[ \-.,\(\)`"]/', '_', $column);
+		} else {
+			$this->pdoLabel = preg_replace('/[ \-.,\(\)`"]/', '_', $pdoLabel);
+		}
+	}
+	
+	public function getQueryParameter() {
+		// Begin workaround for PDO's poor numeric binding
+		if(is_array($this->value)) {
+	      $value = '('.implode(',', $this->value).')';
+	      return $value;
+		}
+
+		/* Run the is_string for string values that happen to be all numbers with a leading 0 */
+		if(!is_string($this->value) && is_numeric($this->value)) {
+			return $this->value;
+		}
+		// End workaround
+		
+		if($this->operator == self::ASSIGNMENT) { 
+			return self::COLON . self::ASSIGNMENT_PREFIX . $this->pdoLabel;
+		} elseif($this->operator == self::IS_NULL || $this->operator == self::IS_NOT_NULL) {
+			return '';
+		} else {
+			return self::COLON . $this->pdoLabel;
+		}
+	}
+}
+
+class MysqlJoin {
+	const NATURAL = 'NATURAL';
+	
+	const LEFT = 'LEFT';
+	const RIGHT = 'RIGHT';
+	const FULL = 'FULL';
+	
+	const INNER = 'INNER';
+	const OUTER = 'OUTER';
+	const CROSS = 'CROSS';
+	
+	public $natural;
+	public $leftRightOrFull;
+	public $innerOuterOrCross = 'OUTER';
+	
+	public $table;
+	public $tablePrimaryKey;
+	public $fromTableForeignKey;
+	
+	public function __construct($leftRightOrFull, $innerOuterOrCross, $table, $tablePrimaryKey, $fromTableForeignKey, $natural = ''){
+		$this->natural = $natural;
+		$this->leftRightOrFull = $leftRightOrFull;
+		$this->innerOuterOrCross = $innerOuterOrCross;
+		$this->table = $table;
+		$this->tablePrimaryKey = $tablePrimaryKey;
+		$this->fromTableForeignKey = $fromTableForeignKey;
+	}
+}
+
 ?>

@@ -125,12 +125,12 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 
         if(strpos($column, '.') === false) {
 			if(isset($this->table)) {
-				$this->assignments[] = new Criterion($this->tableAsPrefix() . '.' . self::escapeWithTicks($column), $value, Criterion::ASSIGNMENT);
+				$this->assignments[] = new PgsqlCriterion($this->tableAsPrefix() . '.' . self::escapeWithTicks($column), $value, PgsqlCriterion::ASSIGNMENT);
 			} else {
 				throw new RecessException('Cannot assign without specifying table.', get_defined_vars());
 			}
 		} else {
-			$this->assignments[] = new Criterion(self::escapeWithTicks($column), $value, Criterion::ASSIGNMENT); 
+			$this->assignments[] = new PgsqlCriterion(self::escapeWithTicks($column), $value, PgsqlCriterion::ASSIGNMENT); 
 		}
 
 		return $this;
@@ -267,7 +267,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param mixed $value
 	 * @return SqlBuilder
 	 */
-	public function equal($column, $value)       { return $this->addCondition(self::escapeWithTicks($column), $value, is_null($value) ? Criterion::IS_NULL : Criterion::EQUAL_TO); }
+	public function equal($column, $value)       { return $this->addCondition(self::escapeWithTicks($column), $value, is_null($value) ? PgsqlCriterion::IS_NULL : PgsqlCriterion::EQUAL_TO); }
 	
 	/**
 	 * Inequality than expression for WHERE clause of update, delete, or select statements.
@@ -276,7 +276,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param mixed $value
 	 * @return SqlBuilder
 	 */
-	public function notEqual($column, $value)    { return $this->addCondition(self::escapeWithTicks($column), $value, is_null($value) ? Criterion::IS_NOT_NULL : Criterion::NOT_EQUAL_TO); }
+	public function notEqual($column, $value)    { return $this->addCondition(self::escapeWithTicks($column), $value, is_null($value) ? PgsqlCriterion::IS_NOT_NULL : PgsqlCriterion::NOT_EQUAL_TO); }
 	
 	/**
 	 * Shortcut alias for SqlBuilder->lessThan($column,$big)->greaterThan($column,$small) 
@@ -295,7 +295,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param numeric $value
 	 * @return SqlBuilder
 	 */
-	public function greaterThan($column, $value)          { return $this->addCondition(self::escapeWithTicks($column), $value, Criterion::GREATER_THAN); }
+	public function greaterThan($column, $value)          { return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::GREATER_THAN); }
 	
 	/**
 	 * Greater than or equal to expression for WHERE clause of update, delete, or select statements.
@@ -304,7 +304,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param numeric $value
 	 * @return SqlBuilder
 	 */
-	public function greaterThanOrEqualTo($column, $value)         { return $this->addCondition(self::escapeWithTicks($column), $value, Criterion::GREATER_THAN_EQUAL_TO); }
+	public function greaterThanOrEqualTo($column, $value)         { return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::GREATER_THAN_EQUAL_TO); }
 	
 	/**
 	 * Less than expression for WHERE clause of update, delete, or select statements.
@@ -313,7 +313,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param numeric $value
 	 * @return SqlBuilder
 	 */
-	public function lessThan($column, $value)          { return $this->addCondition(self::escapeWithTicks($column), $value, Criterion::LESS_THAN); }
+	public function lessThan($column, $value)          { return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::LESS_THAN); }
 
 	/**
 	 * Less than or equal to expression for WHERE clause of update, delete, or select statements.
@@ -322,7 +322,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param numeric $value
 	 * @return SqlBuilder
 	 */
-	public function lessThanOrEqualTo($column, $value)         { return $this->addCondition(self::escapeWithTicks($column), $value, Criterion::LESS_THAN_EQUAL_TO); }
+	public function lessThanOrEqualTo($column, $value)         { return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::LESS_THAN_EQUAL_TO); }
 
 	/**
 	 * LIKE expression for WHERE clause of update, delete, or select statements, does not include wildcards.
@@ -331,8 +331,10 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param string $value
 	 * @return SqlBuilder
 	 */
-	public function like($column, $value)        { return $this->addCondition(self::escapeWithTicks($column), $value, Criterion::LIKE); }
-	
+	public function like($column, $value)        { return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::LIKE); }
+
+	public function ilike($column, $value)			{ return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCtierion::ILIKE); }
+
 	/**
 	 * NOT LIKE expression for WHERE clause of update, delete, or select statements, does not include wildcards.
 	 *
@@ -340,7 +342,9 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param string $value
 	 * @return SqlBuilder
 	 */
-	public function notLike($column, $value)        { return $this->addCondition(self::escapeWithTicks($column), $value, Criterion::NOT_LIKE); }
+	public function notLike($column, $value)        { return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::NOT_LIKE); }
+
+	public function notiLike($column, $value)		{ return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::NOT_ILIKE); } 
 
 	/**
 	 * IS NULL expression for WHERE clause of update, delete, or select statements
@@ -349,7 +353,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param string $value
 	 * @return SqlBuilder
 	 */
-	public function isNull($column)        { return $this->addCondition(self::escapeWithTicks($column), null, Criterion::IS_NULL); }
+	public function isNull($column)        { return $this->addCondition(self::escapeWithTicks($column), null, PgsqlCriterion::IS_NULL); }
 	
 	/**
 	 * IS NOT NULL expression for WHERE clause of update, delete, or select statements
@@ -358,7 +362,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param string $value
 	 * @return SqlBuilder
 	 */
-	public function isNotNull($column)        { return $this->addCondition(self::escapeWithTicks($column), null, Criterion::IS_NOT_NULL); }
+	public function isNotNull($column)        { return $this->addCondition(self::escapeWithTicks($column), null, PgsqlCriterion::IS_NOT_NULL); }
 	
 	/**
 	 * IN to expression for WHERE clause of update, delete, or select statements.
@@ -367,11 +371,11 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @param array $value
 	 * @return SqlBuilder
 	 */
-	public function in($column, $value)        { return $this->addCondition(self::escapeWithTicks($column), $value, Criterion::IN); }
+	public function in($column, $value)        { return $this->addCondition(self::escapeWithTicks($column), $value, PgsqlCriterion::IN); }
 
 	/* XXX Until I work out polygon types correctly, we only have boxes and have to cast them as polygons to do contains */
-	public function contains($column, $point)	{return $this->addCondition('polygon('.self::escapeWithTicks($column).')', $point, Criterion::CONTAINS); }
-//	public function distance($column, $point)	{ return $this->addCondition(' (SELECT ' . self::escapeWithTicks($column), $point . ') ', Criterion::DISTANCE); }
+	public function contains($column, $point)	{return $this->addCondition('polygon('.self::escapeWithTicks($column).')', $point, PgsqlCriterion::CONTAINS); }
+//	public function distance($column, $point)	{ return $this->addCondition(' (SELECT ' . self::escapeWithTicks($column), $point . ') ', PgsqlCriterion::DISTANCE); }
 	
 	/**
 	 * Add a condition to the SqlBuilder statement. Additional logic here to prepend
@@ -400,7 +404,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 			$pdoLabel = null;
 		}
 		
-		$this->conditions[] = new Criterion(self::escapeWithTicks($column), $value, $operator, $pdoLabel);
+		$this->conditions[] = new PgsqlCriterion(self::escapeWithTicks($column), $value, $operator, $pdoLabel);
 		
 		return $this;
 	}
@@ -555,7 +559,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	public function leftOuterJoin($table, $tablePrimaryKey, $fromTableForeignKey) {
-		return $this->join(Join::LEFT, Join::OUTER, $table, $tablePrimaryKey, $fromTableForeignKey);
+		return $this->join(PgsqlJoin::LEFT, PgsqlJoin::OUTER, $table, $tablePrimaryKey, $fromTableForeignKey);
 	}
 	
 	/**
@@ -567,7 +571,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	public function innerJoin($table, $tablePrimaryKey, $fromTableForeignKey) {
-		return $this->join('', Join::INNER, $table, $tablePrimaryKey, $fromTableForeignKey);
+		return $this->join('', PgsqlJoin::INNER, $table, $tablePrimaryKey, $fromTableForeignKey);
 	}
 	
 	/**
@@ -598,7 +602,7 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 		}
 		
 		$this->select = $this->tableAsPrefix() . '.*';
-		$this->joins[] = new Join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey);	
+		$this->joins[] = new PgsqlJoin($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey);	
 		return $this;
 	}
 	
@@ -729,6 +733,107 @@ class PgSqlBuilder implements SqlBuilder, ISqlConditions, ISqlSelectOptions {
 	}
 	public function getTable() {
 		return $this->table;
+	}
+}
+
+class PgsqlCriterion {
+	public $column;
+	public $pdoLabel;
+	public $value;
+	public $operator;
+	
+	const GREATER_THAN = ' > ';
+	const GREATER_THAN_EQUAL_TO = ' >= ';
+	
+	const LESS_THAN = ' < ';
+	const LESS_THAN_EQUAL_TO = ' <= ';
+	
+	const EQUAL_TO = ' = ';
+	const NOT_EQUAL_TO = ' != ';
+
+	/* XXX LIKE is case sensitive in Postgres, use ILIKE for case insensitive searches */
+	const LIKE = ' LIKE ';
+	const NOT_LIKE = ' NOT LIKE ';
+	const ILIKE = ' ILIKE ';
+	const NOT_ILIKE = ' NOT ILIKE ';
+	
+	const IS_NULL = ' IS NULL';
+	const IS_NOT_NULL = ' IS NOT NULL';
+	
+	const COLON = ':';
+	
+	const ASSIGNMENT = '=';
+	const ASSIGNMENT_PREFIX = 'assgn_';
+	
+	const UNDERSCORE = '_';
+	
+	const IN = ' IN ';
+	
+	//const DISTANCE = ' <-> ';
+	
+	const CONTAINS = ' @> ';
+	
+	public function __construct($column, $value, $operator, $pdoLabel = null){
+		$this->column = $column;
+		$this->value = $value;
+		$this->operator = $operator;
+
+		if(!isset($pdoLabel)) {
+			$this->pdoLabel = preg_replace('/[ \-.,\(\)`"]/', '_', $column);
+		} else {
+			$this->pdoLabel = preg_replace('/[ \-.,\(\)`"]/', '_', $pdoLabel);
+		}
+	}
+	
+	public function getQueryParameter() {
+		// Begin workaround for PDO's poor numeric binding
+		if(is_array($this->value)) {
+	      $value = '('.implode(',', $this->value).')';
+	      return $value;
+		}
+
+		/* Run the is_string for string values that happen to be all numbers with a leading 0 */
+		if(!is_string($this->value) && is_numeric($this->value)) {
+			return $this->value;
+		}
+		// End workaround
+		
+		if($this->operator == self::ASSIGNMENT) { 
+			return self::COLON . self::ASSIGNMENT_PREFIX . $this->pdoLabel;
+		} elseif($this->operator == self::IS_NULL || $this->operator == self::IS_NOT_NULL) {
+			return '';
+		} else {
+			return self::COLON . $this->pdoLabel;
+		}
+	}
+}
+
+class PgsqlJoin {
+	const NATURAL = 'NATURAL';
+	
+	const LEFT = 'LEFT';
+	const RIGHT = 'RIGHT';
+	const FULL = 'FULL';
+	
+	const INNER = 'INNER';
+	const OUTER = 'OUTER';
+	const CROSS = 'CROSS';
+	
+	public $natural;
+	public $leftRightOrFull;
+	public $innerOuterOrCross = 'OUTER';
+	
+	public $table;
+	public $tablePrimaryKey;
+	public $fromTableForeignKey;
+	
+	public function __construct($leftRightOrFull, $innerOuterOrCross, $table, $tablePrimaryKey, $fromTableForeignKey, $natural = ''){
+		$this->natural = $natural;
+		$this->leftRightOrFull = $leftRightOrFull;
+		$this->innerOuterOrCross = $innerOuterOrCross;
+		$this->table = $table;
+		$this->tablePrimaryKey = $tablePrimaryKey;
+		$this->fromTableForeignKey = $fromTableForeignKey;
 	}
 }
 ?>

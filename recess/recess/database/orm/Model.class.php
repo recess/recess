@@ -476,6 +476,12 @@ abstract class Model extends Object implements ISqlConditions {
 	function like($column, $rhs) { return $this->select()->like($column,$rhs); }
 	
 	/**
+	 * ILIKE
+	 * XXX Only available for postgres, how should this be implemented?
+	 */
+	function ilike($column, $rhs) { return $this->select()->ilike($column,$rhs); }
+
+	/**
 	 * SQL NOT LIKE criteria, note this does not automatically include wildcards
 	 *
 	 * @param string $column Column
@@ -483,6 +489,12 @@ abstract class Model extends Object implements ISqlConditions {
 	 * @return PdoDataSet
 	 */
 	function notLike($column, $rhs) { return $this->select()->notLike($column,$rhs); }
+
+	/**
+	 * NOT ILIKE
+	 * XXX Only available for postgres, how should this be implemented?
+	 */
+	function notiLike($column, $rhs) { return $this->select()->ilike($column,$rhs); }
 	
 	/**
 	 * SQL IS NULL criteria

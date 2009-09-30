@@ -1,6 +1,6 @@
 <?php
 Library::import('recess.database.sql.PgSqlBuilder');
-Library::import('recess.database.sql.Criterion');
+
 /**
  * Unit Tests for recess.database.sql.PgSqlBuilder
  * @author Kris Jordan <krisjordan@gmail.com>
