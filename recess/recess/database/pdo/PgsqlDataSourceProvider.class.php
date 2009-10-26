@@ -100,7 +100,8 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 						data_type as Type, column_default as default, is_nullable as null 
 						FROM information_schema.columns cols, information_schema.key_column_usage keys 
 						WHERE cols.table_name = \''. $table . '\' 
-						AND keys.table_name=cols.table_name');
+						AND keys.table_name=cols.table_name
+						AND keys.constraint_name = \'' . $table.'_pkey\'');
 
 			$tableDescriptor->tableExists = true;
 		} catch (PDOException $e) {
