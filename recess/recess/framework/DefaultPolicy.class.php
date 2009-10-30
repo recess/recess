@@ -123,6 +123,7 @@ class DefaultPolicy implements IPolicy {
 				$mime = MimeTypes::preferredMimeTypeFor($format);
 				if($mime !== false) {
 					$request->accepts->forceFormat($format);
+					$request->format = $format;
 					$request->setResource(substr($request->resource, 0, strrpos($request->resource, Library::dotSeparator)));
 				}
 			}
