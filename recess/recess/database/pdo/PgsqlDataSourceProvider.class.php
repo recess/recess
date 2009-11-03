@@ -98,10 +98,11 @@ class PgsqlDataSourceProvider implements IPdoDataSourceProvider {
 		try {
 			$results = $this->pdo->query('SELECT keys.column_name as pri, cols.column_name as Field, 
 						data_type as Type, column_default as default, is_nullable as null 
-						FROM information_schema.columns cols, information_schema.key_column_usage keys 
-						WHERE cols.table_name = \''. $table . '\' 
-						AND keys.table_name=cols.table_name
-						AND keys.constraint_name = \'' . $table.'_pkey\'');
+						FROM information_schema.columns cols
+							LEFT JOIN information_schema.key_column_usage keys
+							ON keys.table_name=cols.table_name
+							AND keys.contraint_name = \''. $table . '_pkey\' 
+						WHERE cols.table_name = \''. $table . '\'');
 
 			$tableDescriptor->tableExists = true;
 		} catch (PDOException $e) {
