@@ -13,6 +13,7 @@ class Request {
 	
 	public $accepts;
 	
+	public $ip;
 	public $format;
 	public $headers;
 	public $resource;

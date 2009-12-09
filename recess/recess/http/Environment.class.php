@@ -19,6 +19,8 @@ class Environment {
 		
 		$request->method = $_SERVER['REQUEST_METHOD'];
 		
+		$request->ip = $_SERVER['REMOTE_ADDR'];
+		
 		$request->format = 'html';
 				
 		$request->setResource(self::stripQueryString($_SERVER['REQUEST_URI']));
