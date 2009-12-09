@@ -108,6 +108,14 @@ class PdoDataSet implements Iterator, Countable, ArrayAccess, ISqlSelectOptions,
 	}
 	
 	/**
+	 * Return the SqlBuilder
+	 * @return SqlBuilder
+	 */
+	public function sqlBuilder() {
+		return $this->sqlBuilder;
+	}
+	
+	/**
 	 * Return the results as an array.
 	 *
 	 * @return array of type $this->rowClass

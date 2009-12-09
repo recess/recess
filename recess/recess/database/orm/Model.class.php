@@ -251,7 +251,7 @@ abstract class Model extends Object implements ISqlConditions {
 	protected function assignmentSqlForThisObject(ModelDescriptor $descriptor, $useAssignment = true, $excludePrimaryKey = false) {
 		$sqlBuilder = new SqlBuilder();
 		$sqlBuilder->from($descriptor->getTable());
-		
+
 		if(empty($descriptor->columns)) {
 			throw new RecessException('The "' . $descriptor->getTable() . '" table does not appear to exist in your database.', get_defined_vars());
 		}

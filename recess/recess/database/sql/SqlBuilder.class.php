@@ -573,7 +573,13 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 			$this->table = self::escapeWithTicks($this->table) . ' AS ' . self::escapeWithTicks($tableAlias);
 			$this->usingAliases = true;
 			
-			$tablePrimaryKey = str_replace($oldTable,$tableAlias,$tablePrimaryKey);			
+			if(is_string($tablePrimaryKey)) {
+				$tablePrimaryKey = str_replace($oldTable,$tableAlias,$tablePrimaryKey);	
+			} else if(is_array($tablePrimaryKey)) {
+				foreach($tablePrimaryKey as $key => $value) {
+					$tablePrimaryKey[$key] = str_replace($oldTable,$tableAlias,$tablePrimaryKey[$key]);
+				}
+			}
 		}
 		
 		$this->select = $this->tableAsPrefix() . '.*';
@@ -645,7 +651,15 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 					$joinStatement .= $join->innerOuterOrCross . ' ';
 				}
 				
-				$onStatement = ' ON ' . self::escapeWithTicks($join->tablePrimaryKey) . ' = ' . self::escapeWithTicks($join->fromTableForeignKey);
+				if(!is_array($join->tablePrimaryKey)) {
+					$onStatement = ' ON ' . self::escapeWithTicks($join->tablePrimaryKey) . ' = ' . self::escapeWithTicks($join->fromTableForeignKey);	
+				} else {
+					$onStatements = array();
+					foreach($join->tablePrimaryKey as $key => $primaryKey) {
+						$onStatements[] =  self::escapeWithTicks($primaryKey) . ' = ' . self::escapeWithTicks($join->fromTableForeignKey[$key]);
+					}
+					$onStatement = ' ON ' . implode(' AND ', $onStatements);
+				}
 				$joinStatement .= 'JOIN ' . self::escapeWithTicks($join->table) . $onStatement;
 				
 				$sql .= $joinStatement;
@@ -756,8 +770,26 @@ class Criterion {
 	public function getQueryParameter() {
 		// Begin workaround for PDO's poor numeric binding
 		if(is_array($this->value)) {
-	      $value = '('.implode(',', $this->value).')';
-	      return $value;
+			$return = '(';
+			$first = true;
+			foreach($this->value as $item) {
+				if(!$first) {
+					$return .= ',';
+				} else { $first = false; }
+				
+				if(is_int($item) || is_float($item)) {
+					$return .= $item;
+				}
+				
+				if(is_string($item)) {
+					if(is_numeric($item)) {
+						$return .= addslashes($item);
+					} else {
+						$return .= '"'.addslashes($item).'"';
+					}
+				}
+			}
+			return $return . ')';
 		}
 		
 		if(is_numeric($this->value) && !is_string($this->value)) {

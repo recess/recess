@@ -228,7 +228,7 @@ class MysqlDataSourceProvider implements IPdoDataSourceProvider {
 		}
 		$columnSql .= "\n";
 		
-		return $sql . ' (' . $columnSql . ')';
+		return $sql . ' (' . $columnSql . ')  ENGINE=InnoDB DEFAULT CHARSET=utf8;';
 	}
 	
 	/**
