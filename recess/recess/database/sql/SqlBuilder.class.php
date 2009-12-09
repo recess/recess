@@ -795,8 +795,12 @@ class Criterion {
 		if(is_numeric($this->value) && !is_string($this->value)) {
 			return $this->value;
 		}
-		// End workaround
 		
+		if(is_string($this->value) && substr($this->value,0,2) === '0x' && preg_match('/^0x[0-9a-fA-F]*$/',$this->value) > 0) {
+			return $this->value;
+		}
+		
+		// End workaround
 		if($this->operator == self::ASSIGNMENT) { 
 			return self::COLON . self::ASSIGNMENT_PREFIX . $this->pdoLabel;
 		} elseif($this->operator == self::IS_NULL || $this->operator == self::IS_NOT_NULL) {
