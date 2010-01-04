@@ -233,24 +233,24 @@ abstract class Library {
 	}
 	
 	static function load($className) {
-		if(self::$inNamedRunImport) return;
+		if(self::$inNamedRunImport) return true;
 				
 		if(!isset(self::$loaded[$className])) {
-			throw new LibraryException($className . ' has not been imported.');
+			return false;
 		}
 		
-		if(self::$loaded[$className]) { return; }
+		if(self::$loaded[$className]) { return true; }
 		
 		// Search through paths to find requested file
 		if(class_exists($className, false) || self::classExists(self::$classesByClass[$className][self::NAME])) {
-			return;	
+			return true;	
 		} else {
 			// Could not load the desired class
 			$paths = '';
 			foreach(self::$paths as $path) {
 				$paths .= $path . '<br />';				
 			}
-			throw new LibraryException('Library cannot find class "' . self::$classesByClass[$className][self::NAME] . '". Searched in: <br />' . $paths);
+			return false;
 		}
 	}
 	
@@ -304,14 +304,7 @@ abstract class Library {
 	}
 }
 
-function __autoload($class) {
-	try {
-		Library::load($class);
-	} catch (Exception $exception) {
-		Diagnostics::handleException($exception);
-		die('Could not autoload ' . $class);
-	}
-}
+spl_autoload_register(array('Library','load'));
 
 class Make {
 	static private $classes = array();
