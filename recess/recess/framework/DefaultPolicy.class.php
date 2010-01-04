@@ -5,6 +5,7 @@ Library::import('recess.framework.views.NativeView');
 Library::import('recess.framework.views.JsonView');
 Library::import('recess.framework.interfaces.IPolicy');
 Library::import('recess.framework.http.MimeTypes');
+Library::import('recess.framework.views.EmptyView');
 
 // TODO: Remove this import in 0.3
 Library::import('recess.framework.views.RecessView');
@@ -80,6 +81,10 @@ class DefaultPolicy implements IPolicy {
 				}
 			}
 		} while ($format !== false);
+		
+		if($response->code >= 300 && $response->code < 400) {
+			return new EmptyView();
+		}
 		
 		if(isset($response->meta->viewName)) {
 			if(isset($response->meta->viewsPrefix)) {
