@@ -560,6 +560,15 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	protected function join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey) {
+		
+//		$aliasClash = false;
+//		
+//		foreach($this->joins as $join) {
+//			if($join->table == $table) {
+//				$aliasClash = true;
+//			}
+//		}
+
 		if($this->table == $table) {
 			$oldTable = $this->table;
 			$parts = explode('__', $this->table);
@@ -581,9 +590,20 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 				}
 			}
 		}
+
+		$newJoin = new Join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey);
 		
 		$this->select = $this->tableAsPrefix() . '.*';
-		$this->joins[] = new Join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey);	
+		
+		// Special case that protects against the same join being issued twice
+		foreach($this->joins as $join) {
+			if($join == $newJoin) { 
+				return $this;
+			}
+		}
+		
+		$this->joins[] = $newJoin;
+		
 		return $this;
 	}
 	
