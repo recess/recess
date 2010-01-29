@@ -574,8 +574,9 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 				$number = 2;
 			}
 			$tableAlias = $this->table . '__' . $number;
-			$this->table(self::escapeWithTicks($this->table) . ' AS ' . self::escapeWithTicks($tableAlias));
+
 			$this->usingAliases = true;
+			$this->table(self::escapeWithTicks($this->table) . ' AS ' . self::escapeWithTicks($tableAlias));
 			
 			if(is_string($tablePrimaryKey)) {
 				$tablePrimaryKey = str_replace($oldTable,$tableAlias,$tablePrimaryKey);	
@@ -587,6 +588,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 		}
 		
 		$newJoin = new Join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey);
+		
 		// Special case that protects against the same join being issued twice
 		foreach($this->joins as $join) {
 			if($join == $newJoin) {
@@ -629,12 +631,10 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 			$newJoin->fromTableForeignKey = $fromTableForeignKey;
 			$newJoin->table = self::escapeWithTicks($oldTable) . ' AS ' . $newJoin->table;
 			$this->usingAliases = true;
+			$this->table($newJoin->table);
 		}
-			
 		
-		$this->table($newJoin->table);
 		$this->select = $this->tableAsPrefix() . '.*';
-		
 		$this->joins[] = $newJoin;
 		
 		return $this;

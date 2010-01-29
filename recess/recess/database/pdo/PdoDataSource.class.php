@@ -104,7 +104,13 @@ class PdoDataSource extends PDO {
 	function queryForClass(SqlBuilder $builder, $className) {
 		$statement = $this->provider->getStatementForBuilder($builder,'select',$this);
 		$statement->setFetchMode(PDO::FETCH_CLASS, $className, array());
-		$statement->execute();
+		try {
+			$statement->execute();
+		} catch(Exception $e) {
+			print $builder->select();
+			print "\n";
+			throw $e;
+		}
 		return $this->provider->fetchAll($statement);
 	}
 	
