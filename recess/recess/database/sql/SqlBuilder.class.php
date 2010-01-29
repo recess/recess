@@ -90,7 +90,6 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder 
 	 */
 	public function table($table) {
-		echo "Table: $table \n";
 		$this->table = $table;
 		$this->select = $this->tableAsPrefix() . '.*';
 		return $this; 
@@ -377,7 +376,6 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 				throw new RecessException('Cannot use "' . $operator . '" operator without specifying table for column "' . $column . '".', get_defined_vars());
 			}
 		}
-		echo $column . "\n";
 		if(isset($this->conditionsUsed[$column])) {
 			$this->conditionsUsed[$column]++;
 			$pdoLabel = $column . '_' . $this->conditionsUsed[$column];
@@ -565,7 +563,6 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 		
 		// Case where joining the same table
 		if($this->table == $table) {
-			echo "join on same table\n";
 			$oldTable = $this->table;
 			$parts = explode('__', $this->table);
 			$partsCount = count($parts);
@@ -593,7 +590,6 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 		// Special case that protects against the same join being issued twice
 		foreach($this->joins as $join) {
 			if($join == $newJoin) {
-				echo "Duplicate join\n";
 				$this->table($table);
 				return $this;
 			}
