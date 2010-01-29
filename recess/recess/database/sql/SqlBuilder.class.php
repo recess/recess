@@ -89,7 +89,11 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	 * @param string $table
 	 * @return SqlBuilder 
 	 */
-	public function table($table) { $this->table = $table; return $this; }
+	public function table($table) {
+		$this->table = $table;
+		$this->select = $this->tableAsPrefix() . '.*';
+		return $this; 
+	}
 	
 	/**
 	 * Alias for table (insert into)
@@ -517,13 +521,12 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	 */
 	protected function tableAsPrefix() {
 		if($this->usingAliases) {
-			$spacePos = strrpos($this->table, ' ');
-			if($spacePos !== false) {
-				return substr($this->table, $spacePos + 1);
-			}
+			return $this->getTableAlias();
 		}
 		return $this->table;
 	}
+	
+	
 	
 	/**
 	 * Left outer join expression for SELECT SQL statement.
@@ -560,15 +563,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	protected function join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey) {
-		
-//		$aliasClash = false;
-//		
-//		foreach($this->joins as $join) {
-//			if($join->table == $table) {
-//				$aliasClash = true;
-//			}
-//		}
-
+		// Case where joining the same table
 		if($this->table == $table) {
 			$oldTable = $this->table;
 			$parts = explode('__', $this->table);
@@ -579,7 +574,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 				$number = 2;
 			}
 			$tableAlias = $this->table . '__' . $number;
-			$this->table = self::escapeWithTicks($this->table) . ' AS ' . self::escapeWithTicks($tableAlias);
+			$this->table(self::escapeWithTicks($this->table) . ' AS ' . self::escapeWithTicks($tableAlias));
 			$this->usingAliases = true;
 			
 			if(is_string($tablePrimaryKey)) {
@@ -590,17 +585,55 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 				}
 			}
 		}
-
+		
 		$newJoin = new Join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey);
-		
-		$this->select = $this->tableAsPrefix() . '.*';
-		
 		// Special case that protects against the same join being issued twice
 		foreach($this->joins as $join) {
-			if($join == $newJoin) { 
+			if($join == $newJoin) {
+				$this->table($table);
 				return $this;
 			}
 		}
+		
+		// Not a duplicate join, check to make sure we're not doing
+		//  a new join on a table that's already joined and need to alias it
+		$clash = false;
+		foreach(array_reverse($this->joins) as $join) {
+			if($join->table === $newJoin->table) {
+				$oldTable = $newJoin->table;
+	
+				$clash = true;
+				
+				$parts = explode('__', $newJoin->table);
+				$partsCount = count($parts);
+				if($partsCount > 0 && is_int($parts[$partsCount-1])) {
+					$number = $parts[$partsCount - 1] + 1;
+				} else {
+					$number = 2;
+				}
+				
+				$newJoin->table = self::escapeWithTicks($parts[0] . '__' . $number);
+			}
+		}
+		
+		if($clash) {
+			$tableAlias = $newJoin->table;
+			$fromTableForeignKey = $newJoin->fromTableForeignKey;
+			if(is_string($fromTableForeignKey)) {
+				$fromTableForeignKey = str_replace($oldTable,$tableAlias,$fromTableForeignKey);	
+			} else if(is_array($fromTableForeignKey)) {
+				foreach($fromTableForeignKey as $key => $value) {
+					$fromTableForeignKey[$key] = str_replace($oldTable,$tableAlias,$fromTableForeignKey[$key]);
+				}
+			}
+			$newJoin->fromTableForeignKey = $fromTableForeignKey;
+			$newJoin->table = self::escapeWithTicks($oldTable) . ' AS ' . $newJoin->table;
+			$this->usingAliases = true;
+		}
+			
+		
+		$this->table($newJoin->table);
+		$this->select = $this->tableAsPrefix() . '.*';
 		
 		$this->joins[] = $newJoin;
 		
@@ -741,8 +774,27 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	public function getCriteria() {
 		return array_merge($this->conditions, $this->assignments);
 	}
+	
 	public function getTable() {
 		return $this->table;
+	}
+	
+	public function getRawTable() {
+		$spacePos = strpos($this->table, ' ');
+		if($spacePos !== false) {
+			return substr($this->table, 0, $spacePos);
+		} else {
+			return $this->table;
+		}
+	}
+	
+	public function getTableAlias() {
+		$spacePos = strrpos($this->table, ' ');
+		if($spacePos !== false) {
+			return substr($this->table, $spacePos + 1);
+		} else {
+			return $this->table;
+		}
 	}
 }
 
