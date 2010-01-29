@@ -90,6 +90,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder 
 	 */
 	public function table($table) {
+		echo "Table: $table \n";
 		$this->table = $table;
 		$this->select = $this->tableAsPrefix() . '.*';
 		return $this; 
@@ -376,7 +377,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 				throw new RecessException('Cannot use "' . $operator . '" operator without specifying table for column "' . $column . '".', get_defined_vars());
 			}
 		}
-				
+		echo $column . "\n";
 		if(isset($this->conditionsUsed[$column])) {
 			$this->conditionsUsed[$column]++;
 			$pdoLabel = $column . '_' . $this->conditionsUsed[$column];
@@ -520,10 +521,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	 * @return string The current table which can be used as a prefix.
 	 */
 	protected function tableAsPrefix() {
-		if($this->usingAliases) {
-			return $this->getTableAlias();
-		}
-		return $this->table;
+		return $this->getTableAlias();
 	}
 	
 	
@@ -563,8 +561,11 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 	 * @return SqlBuilder
 	 */
 	protected function join($leftOrRight, $innerOrOuter, $table, $tablePrimaryKey, $fromTableForeignKey) {
+		$fromTableAfterJoin = $table;
+		
 		// Case where joining the same table
 		if($this->table == $table) {
+			echo "join on same table\n";
 			$oldTable = $this->table;
 			$parts = explode('__', $this->table);
 			$partsCount = count($parts);
@@ -576,7 +577,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 			$tableAlias = $this->table . '__' . $number;
 
 			$this->usingAliases = true;
-			$this->table(self::escapeWithTicks($this->table) . ' AS ' . self::escapeWithTicks($tableAlias));
+			$fromTableAfterJoin = self::escapeWithTicks($this->table) . ' AS ' . self::escapeWithTicks($tableAlias);
 			
 			if(is_string($tablePrimaryKey)) {
 				$tablePrimaryKey = str_replace($oldTable,$tableAlias,$tablePrimaryKey);	
@@ -592,6 +593,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 		// Special case that protects against the same join being issued twice
 		foreach($this->joins as $join) {
 			if($join == $newJoin) {
+				echo "Duplicate join\n";
 				$this->table($table);
 				return $this;
 			}
@@ -615,6 +617,7 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 				}
 				
 				$newJoin->table = self::escapeWithTicks($parts[0] . '__' . $number);
+				$fromTableAfterJoin = $newJoin->table;
 			}
 		}
 		
@@ -631,9 +634,9 @@ class SqlBuilder implements ISqlConditions, ISqlSelectOptions {
 			$newJoin->fromTableForeignKey = $fromTableForeignKey;
 			$newJoin->table = self::escapeWithTicks($oldTable) . ' AS ' . $newJoin->table;
 			$this->usingAliases = true;
-			$this->table($newJoin->table);
 		}
 		
+		$this->table($fromTableAfterJoin);
 		$this->select = $this->tableAsPrefix() . '.*';
 		$this->joins[] = $newJoin;
 		
