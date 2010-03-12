@@ -364,10 +364,22 @@ abstract class Model extends Object implements ISqlConditions {
 	 * @return boolean
 	 */
 	function exists() {
-		$result = $this->select()->first();
-		if($result !== false) {
-			$this->copy($result, false);
-			return true;
+		$descriptor = self::getClassDescriptor($this);
+		$blank_object = true;
+		foreach($this as $column => $value) {
+			if(in_array($column, $descriptor->columns) && isset($value)) {
+				$blank_object = false;
+			}
+		}
+		
+		if(!$blank_object) {
+			$result = $this->select()->first();
+			if($result !== false) {
+				$this->copy($result, false);
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
