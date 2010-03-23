@@ -9,6 +9,7 @@ Library::import('recess.framework.forms.BooleanInput');
 Library::import('recess.framework.forms.HiddenInput');
 Library::import('recess.framework.forms.PointInput');
 Library::import('recess.framework.forms.BoxInput');
+Library::import('recess.framework.forms.PasswordInput');
 
 class Form {
 	protected $name;
@@ -43,12 +44,17 @@ class Form {
 		$this->action = $action;
 	}
 	
-	function begin() {
+	function begin($id = null) {
 		if($this->method == Methods::DELETE || $this->method == Methods::PUT) {
-			echo '<form method="POST" action="' . $this->action . '">';
+			echo '<form method="POST" ';
+			if( $id != null ) echo "id=\"{$id}\" ";
+			echo 'action="' . $this->action . '">';
+
 			echo '<input type="hidden" name="_METHOD" value="' . $this->method . '" />';
 		} else {
-			echo '<form method="' . $this->method . '" action="' . $this->action . '">';
+			echo '<form method="' . $this->method . '" ';
+			if( $id != null ) echo "id=\"{$id}\" ";
+			echo 'action="' . $this->action . '">';
 		}
 	}
 	
