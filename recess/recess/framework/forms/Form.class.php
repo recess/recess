@@ -27,6 +27,8 @@ class Form {
 	
 	function __get($name) {
 		if(isset($this->inputs[$name])) {
+			// XXX allow $form->property to have a value that can bve accessed from the views without  having to call $form->input('property') first.
+			$this->inputs[$name]->setValue($this->model->$name);
 			return $this->inputs[$name];
 		} else {
 			return '';
