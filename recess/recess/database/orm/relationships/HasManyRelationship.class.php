@@ -35,7 +35,7 @@ class HasManyRelationship extends Relationship {
 	
 	function attachMethodsToModelDescriptor(ModelDescriptor $descriptor) {
 		$alias = $this->name;
-		$attachedMethod = new AttachedMethod($this,'selectModel', $alias);
+		$attachedMethod = new AttachedMethod($this,'select', $alias);
 		$descriptor->addAttachedMethod($alias, $attachedMethod);
 		
 		$alias = 'addTo' . ucfirst($this->name);
@@ -98,12 +98,16 @@ class HasManyRelationship extends Relationship {
 		}
 	}
 	
-	function selectModel(Model $model) {
-		return $this->augmentSelect($model->select());
-	}
-	
-	function selectModelSet(ModelSet $modelSet) {
-		return $this->augmentSelect($modelSet);
+	function select($modelOrModelSet) {
+		if($modelOrModelSet instanceof Model) {
+			$model = $modelOrModelSet;
+			return $this->augmentSelect($model->select());
+		} else if ($modelOrModelSet instanceof ModelSet) {
+			$modelSet = $modelOrModelSet;
+			return $this->augmentSelect($modelSet);
+		} else {
+			return false;
+		}
 	}
 	
 	protected function augmentSelect(PdoDataSet $select) {

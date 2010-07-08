@@ -52,6 +52,13 @@ abstract class Model extends Object implements ISqlConditions {
 	}
 	
 	/**
+	 * Return the model's descriptor.
+	 */
+	static function getDescriptor($class) {
+		return self::getClassDescriptor($class);
+	}
+	
+	/**
 	 * Get the datasource for a class.
 	 *
 	 * @param mixed $class

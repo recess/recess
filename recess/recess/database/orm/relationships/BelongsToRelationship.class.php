@@ -25,7 +25,7 @@ class BelongsToRelationship extends Relationship {
 	
 	function attachMethodsToModelDescriptor(ModelDescriptor $descriptor) {
 		$alias = $this->name;
-		$attachedMethod = new AttachedMethod($this, 'selectModel', $alias);
+		$attachedMethod = new AttachedMethod($this, 'select', $alias);
 		$descriptor->addAttachedMethod($alias, $attachedMethod);
 		
 		$alias = 'set' . ucfirst($this->name);
@@ -69,25 +69,29 @@ class BelongsToRelationship extends Relationship {
 		return $select;
 	}
 	
-	function selectModel(Model $model) {
-		$foreignKey = $this->foreignKey;
+	function select($modelOrModelSet) {
+		if($modelOrModelSet instanceof Model) {
+			$model = $modelOrModelSet;		
+			$foreignKey = $this->foreignKey;
 		
-		if(isset($model->$foreignKey)) {
-			$select = $this->augmentSelect($model->all());
-			$select = $select->equal(Model::tableFor($this->localClass) . '.' . $this->foreignKey, $model->$foreignKey);
-		} else {
-			$select = $this->augmentSelect($model->select());
-		}
+			if(isset($model->$foreignKey)) {
+				$select = $this->augmentSelect($model->all());
+				$select = $select->equal(Model::tableFor($this->localClass) . '.' . $this->foreignKey, $model->$foreignKey);
+			} else {
+				$select = $this->augmentSelect($model->select());
+			}
 		
-		if(isset($select[0])) {
-			return $select[0];
+			if(isset($select[0])) {
+				return $select[0];
+			} else {
+				return null;
+			}
+		} elseif ($modelOrModelSet instanceof ModelSet) {
+			$modelSet = $modelOrModelSet;
+			return $this->augmentSelect($modelSet);
 		} else {
-			return null;
+			return false;
 		}
-	}
-	
-	function selectModelSet(ModelSet $modelSet) {
-		return $this->augmentSelect($modelSet);
 	}
 	
 	function onDeleteCascade(Model $model) {

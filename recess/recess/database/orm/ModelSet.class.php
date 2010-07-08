@@ -1,24 +1,28 @@
 <?php
 
+Library::import('recess.lang.Inflector');
 Library::import('recess.database.pdo.PdoDataSet');
 
 class ModelSet extends PdoDataSet {
 	
 	function __call($name, $arguments) {
-		$relationship = Model::getRelationship($this->rowClass, $name);
-		if($relationship === false && Inflector::isPlural($name)) {
-			$name = Inflector::toSingular($name);
-			$relationship = Model::getRelationship($this->rowClass, $name);
-			if(!$relationship instanceof BelongsToRelationship) {
-				$relationship = false;
+		if(empty($arguments)) {
+			$descriptor = Model::getDescriptor($this->rowClass);
+			$attachedMethod = $descriptor->getAttachedMethod($name);
+			if(!$attachedMethod) {
+				if(Inflector::isPlural($name)) {
+					$attachedMethod = $descriptor->getAttachedMethod(Inflector::toSingular($name));
+				}
+			}
+			if($attachedMethod) {
+				$params = $attachedMethod->getParameters();
+				if(count($params) === 0) {
+					return call_user_func(array($attachedMethod->object,$attachedMethod->method),$this);
+				}
 			}
 		}
 		
-		if($relationship !== false) {
-			return $relationship->selectModelSet($this);
-		} else {
-			throw new RecessException('Relationship "' . $name . '" does not exist.', get_defined_vars());
-		}
+		throw new RecessException('Method "' . $name . '" does not exist on ModelSet nor is attached to '.$this->rowClass.'.', get_defined_vars());
 	}
 	
 	function update() {
@@ -31,5 +35,3 @@ class ModelSet extends PdoDataSet {
 		}
 	}
 }
-
-?>
