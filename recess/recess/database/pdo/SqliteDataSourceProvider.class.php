@@ -193,7 +193,7 @@ class SqliteDataSourceProvider implements IPdoDataSourceProvider {
 			$booleanColumns = array();
 			for($i = 0 ; $i < $columnCount; $i++) {
 				$meta = $statement->getColumnMeta($i);
-				if($meta['sqlite:decl_type'] == 'BOOLEAN') {
+				if(isset($meta['sqlite:decl_type']) && $meta['sqlite:decl_type'] == 'BOOLEAN') {
 					$manualFetch = true;
 					$booleanColumns[] = $meta['name'];
 				}
