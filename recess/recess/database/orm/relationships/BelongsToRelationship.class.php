@@ -95,11 +95,11 @@ class BelongsToRelationship extends Relationship {
 	}
 	
 	function onDeleteCascade(Model $model) {
-		$this->selectModel($model)->delete();
+		$this->select($model)->delete();
 	}
 	
 	function onDeleteDelete(Model $model) {
-		$relatedModel = $this->selectModel($model);
+		$relatedModel = $this->select($model);
 		if($relatedModel != null) {
 			$relatedModel->delete(false);		
 		}

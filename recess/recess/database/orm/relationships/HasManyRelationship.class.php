@@ -141,7 +141,7 @@ class HasManyRelationship extends Relationship {
 	}
 	
 	function onDeleteCascade(Model $model) {
-		$related = $this->selectModel($model)->delete();
+		$related = $this->select($model)->delete();
 		
 		if(isset($this->through)) {
 			$modelPk = Model::primaryKeyName($model);
