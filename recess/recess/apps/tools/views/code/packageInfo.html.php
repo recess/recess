@@ -30,7 +30,7 @@ foreach($package->children() as $child) {
 <h2>Classes</h2>
 <ul>
 <?php
-foreach($package->classes() as $class) {
+foreach($package->getClasses() as $class) {
 	echo '<li><a href="../class/' . $package->name . '.' . $class->name . '">'. $class->name .'</a></li>';
 }
 ?>

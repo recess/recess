@@ -78,8 +78,17 @@ class RecessReflectorClass extends Model {
 			}
 		}
 		
-		
 	}
 	
+    function getPackage() {
+        $package = Library::getPackage($this->name);	
+		if($package != '') {
+			$packageReflector = new RecessReflectorPackage();
+			$packageReflector->name = $package;
+			if($packageReflector->exists()) {
+				return $packageReflector;
+			} 
+		}
+    }
 }
 ?>

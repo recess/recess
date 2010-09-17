@@ -6,7 +6,7 @@ $title = 'Class ' . $reflection->name;
 <?php
 $parent = $reflector->parent();
 if(isset($parent)) {
-	$parentPackage = $parent->package();
+	$parentPackage = $parent->getPackage();
 }
 $children = $reflector->children();
 ?>
@@ -31,7 +31,7 @@ $children = $reflector->children();
 </ul>
 </div>
 <div class="span-16 last class-info">
-<h3 class="quiet">Package: <a href="../package/<?php echo $reflector->package()->name;?>"><?php echo $reflector->package()->name; ?></a></h3>
+<h3 class="quiet">Package: <a href="../package/<?php echo $reflector->getPackage()->name;?>"><?php echo $reflector->getPackage()->name; ?></a></h3>
 <h1><?php echo $reflection->name; ?>
 <?php if(isset($parentPackage)) { ?>
 <span class="quiet">extends <a href="<?php echo $parentPackage->name . '.' . $parent->name; ?>"><?php echo $parent->name; ?></a></span>
@@ -107,7 +107,7 @@ function printSubclasses($children) {
 	<?php
 	}
 	foreach($children as $child) {
-		?><li><a href="<?php echo $child->package()->name . '.' . $child->name ?>"><?php echo $child->name; ?></a><?php
+		?><li><a href="<?php echo $child->getPackage()->name . '.' . $child->name ?>"><?php echo $child->name; ?></a><?php
 	}
 	echo '</ul>';
 }

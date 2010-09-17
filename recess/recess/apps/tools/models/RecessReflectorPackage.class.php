@@ -42,5 +42,14 @@ class RecessReflectorPackage extends Model {
 			$this->setParent($parent);
 		}
 	}
+    
+    function getClasses() {
+        $packageReflector = new RecessReflectorClass();
+        $packageReflector->packageId = $this->id;
+        if($packageReflector->exists()) {
+            return $packageReflector->all();
+        }
+        return array();
+    }
 	
 }
