@@ -25,7 +25,9 @@ class DefaultPolicy implements IPolicy {
 		$this->getHttpMethodFromPost($request);
 
 		$this->forceFormatFromResourceString($request);
-			
+		
+		$this->reparameterizeForFormat($request);
+		
 		return $request;
 	}
 	
@@ -137,13 +139,11 @@ class DefaultPolicy implements IPolicy {
 		return $request;
 	}
 
-	// @Todo: Worry about the "input" problem. This isn't based on the format
-	//			but rather it is based on the content-type of the entity.
+	// TODO: use Content-Type header instead of format to parse request body.
 	protected function reparameterizeForFormat(Request $request) {
-		if($request->format == Formats::JSON) {
-			$method = strtolower($request->method);
-			$request->$method = json_decode($request->input, true);
-		} else if ($request->format == Formats::XML) {
+		if(strtolower($request->format) == 'json' && json_decode($request->input)) {
+			$request->post = json_decode($request->input, true);
+		} else if (strtolower($request->format) == 'xml') {
 			// TODO: XML reparameterization in request transformer
 		}
 		return $request;
