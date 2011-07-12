@@ -4,7 +4,7 @@ Library::import('recess.framework.Application');
 class WelcomeApplication extends Application {
 	public function __construct() {
 		
-		$this->name = 'Welcome to Recess';
+		$this->name = 'Welcome to Recess (GC)';
 		
 		$this->viewsDir = $_ENV['dir.apps'] . 'welcome/views/';	
 		
