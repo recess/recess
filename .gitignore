@@ -5,3 +5,4 @@
 *.db
 recess/temp/compiled/*
 recess/temp/*.*
+/recess-conf.php
