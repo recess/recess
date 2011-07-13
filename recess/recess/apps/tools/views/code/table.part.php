@@ -12,8 +12,8 @@ for($row = 0 ; $row < $perColumn ; $row++) {
 		$object = isset($objects[$perColumn*$col+$row]) ? $objects[$perColumn*$col+$row] : '';
 		
 		$value = is_object($object) ? $object->name : '';
-		if($object instanceof RecessReflectorClass && $object->package() != null) {
-			$prefix = $object->package()->name . '.';
+		if($object instanceof RecessReflectorClass && $object->getPackage() != null) {
+			$prefix = $object->getPackage()->name . '.';
 			$linkTo = 'class';
 		} else {
 			$prefix = '';
