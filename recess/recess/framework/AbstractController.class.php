@@ -103,6 +103,23 @@ abstract class AbstractController extends Object implements IController {
 		Library::import('recess.http.responses.ForwardingUnauthorizedResponse');
 		return new ForwardingUnauthorizedResponse($this->request, $forwardUri, $realm);
 	}
+
+    protected function accepted($resourceUri, $contentUri = '') {
+        Library::import('recess.http.responses.AcceptedResponse');
+        if($contentUri == '') $contentUri = $resourceUri;
+        return new AcceptedResponse($this->request, $resourceUri, $contentUri);
+    }
+
+    // XXX
+    // Sometimes I don't have an object to forward the creator to the details
+    // of, I just want to display something and give the 201 code
+    protected function noforwardCreated($viewName = null) {
+        Library::import('recess.http.responses.NoForwardCreatedResponse');
+        $response = new NoForwardCreatedResponse($this->request);
+        if(isset($viewName)) $response->meta->viewName = $viewName;
+        return $response;
+    }
+
 }
 
 ?>
