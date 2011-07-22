@@ -20,7 +20,13 @@ Library::import('recess.http.Environment');
 Library::import('recess.Recess');
 
 // Entry point to Recess
-Recess::main(Environment::getRawRequest(), RecessConf::$policy, RecessConf::getRoutes(), RecessConf::$plugins);
+try {
+    Recess::main(Environment::getRawRequest(), RecessConf::$policy, RecessConf::getRoutes(), RecessConf::$plugins);
+} catch (Exception $e) {
+    error_log("Caught Exception " . $e->getMessage());
+    error_log($e->getFile . '(' . $e->getLine() . ')');
+    header('HTTP/1.1 500 Internal Server Error');
+}
 
 // RecessConf follows...
 
