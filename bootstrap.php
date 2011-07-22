@@ -145,12 +145,13 @@ abstract class RecessConf {
 			}
 			die($message);
 		}
-		if(!empty(RecessConf::$namedDatabases)) {
-			foreach(RecessConf::$namedDatabases as $name => $sourceInfo) {
-				Databases::addSource($name, new ModelDataSource($sourceInfo));
-			}
-		}
-		
+
+        if(!empty(RecessConf::$namedDatabases)) {
+            foreach(RecessConf::$namedDatabases as $name => $sourceInfo) {
+                Databases::addSource($name, $sourceInfo);
+            }
+        }
+
 		Library::import('recess.framework.DefaultPolicy');
 		self::$policy = new DefaultPolicy();
 	}

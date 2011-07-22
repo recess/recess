@@ -21,22 +21,30 @@ class Databases {
 	 * @param string $name
 	 * @return PdoDataSource
 	 */
-	static function getSource($name) {
-		if(isset(self::$sources[$name]))
-			return self::$sources[$name];
-		else
-			return null;
-	}
-	
-	/**
-	 * Add a named datasource.
-	 *
-	 * @param string $name
-	 * @param PdoDataSource $source
-	 */
-	static function addSource($name, PdoDataSource $source) {
-		self::$sources[$name] = $source;
-	}
+    static function getSource($name) {
+        if(isset(self::$sources[$name])) {
+            return self::$sources[$name];
+        }
+        else
+            if(isset(self::$inactive_sources[$name])) {
+                self::addActiveSource($name, new ModelDataSource(self::$inactive_sources[$name]));
+                return self::$sources[$name];
+            } else return null;
+    }
+
+    static function addActiveSource($name, PdoDataSource $source) {
+        self::$sources[$name] = $source;
+    }
+
+    /**
+     * Add a named datasource.
+     *
+     * @param string $name
+     * @param PdoDataSource $source
+     */
+    static function addSource($name, $source) {
+        self::$inactive_sources[$name] = $source;
+    }
 	
 	/**
 	 * Get all named data sources.
