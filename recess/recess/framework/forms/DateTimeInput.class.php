@@ -68,6 +68,7 @@ class DateTimeInput extends FormInput {
 			$this->printMonthInput();
 			$this->printDayInput();
 			$this->printYearInput();
+      echo ' '; // make sure there's spacing to the time
 		}
 		
 		if($this->showTime) {
@@ -75,7 +76,9 @@ class DateTimeInput extends FormInput {
 			$this->printMinuteInput();
 			$this->printmeridiemInput();
 		}
-		
+    if(!empty($this->flash)) {
+        echo ' <span class="'.$this->class.'">'.$this->flash.'</span>';
+    }	
 	}
 	
 	function printMonthInput() {
@@ -103,7 +106,7 @@ class DateTimeInput extends FormInput {
 	}
 	
 	function printSelect($name, $values, $selected) {
-		echo '<select name="', $name, '">';
+    echo '<select name="', $name, '"', empty($this->class) ? '' : " class=\"$this->class\"", '>';
 		
 		foreach($values as $key => $value) {
 			$key++;
@@ -118,7 +121,7 @@ class DateTimeInput extends FormInput {
 	}
 	
 	function printText($name, $value = '') {
-		echo '<input class="text short" name="' . $name . '" value="' . $value . '" />';
+    echo '<input class="text short', empty($this->class) ? '' : " $this->class", '" name="' . $name . '" value="' . $value . '" />';
 	}
 }
 ?>

@@ -14,6 +14,12 @@ class ModelForm extends Form {
 		$newInput .= 'Input';
 		$this->inputs[$name] = new $newInput($this->name . '[' . $name . ']');
 		$this->inputs[$name]->setValue($current->getValue());
+    if(!empty($current->class)) {
+      $this->inputs[$name]->class = $current->class;
+    }
+    if(!empty($current->flash)) {
+      $this->inputs[$name]->flash = $current->flash;
+    }
 	}
 	
 	function __construct($name, $values, Model $model = null) {		
@@ -51,7 +57,6 @@ class ModelForm extends Form {
 						break;
 					case RecessType::DATETIME:
 						$this->inputs[$propertyName] = new DateTimeInput($inputName);
-						$this->inputs[$propertyName]->showTime = false;
 						break;
 					case RecessType::TIME:
 						$this->inputs[$propertyName] = new DateTimeInput($inputName);
