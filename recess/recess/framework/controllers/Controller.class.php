@@ -117,6 +117,19 @@ abstract class Controller extends AbstractController {
 				$url = substr($url, 1);
 			}
 			
+			// Checks if the routes prefix has some parameters and 
+			// replaces them with actual values from request meta data.
+			$prefixParts = explode('/',$descriptor->routesPrefix);
+			$prefixParams = array();
+			$prefixParamValues = array();
+			foreach($prefixParts as $part) {
+				if(strpos($part, '$') !== false) {
+					$prefixParams[] = $part;
+					$prefixParamValues[] = $this->request->meta->controllerMethodArguments[substr($part,1)];
+				}
+			}
+			$url = str_replace($prefixParams, $prefixParamValues, $url);
+			
 			if(!empty($args)) {
 				$reflectedMethod = new ReflectionMethod($this, $methodName);
 				$parameters = $reflectedMethod->getParameters();
