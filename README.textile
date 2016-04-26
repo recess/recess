@@ -58,7 +58,7 @@ Stay tuned, ask questions, and get involved in the Recess Community:
 * IRC: irc.freenode.net #recess
 * Mailing List: http://groups.google.com/group/recess-framework
 * Github: http://github.com/recess/recess/
-* Forum: http://www.recessframework.org/
+* -Forum: http://www.recessframework.org/-
 * Twitter: http://twitter.com/RecessFramework
 
 Enjoy Recess!
