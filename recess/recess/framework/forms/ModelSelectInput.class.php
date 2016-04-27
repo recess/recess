@@ -11,14 +11,14 @@ class ModelSelectInput extends FormInput {
 	}
 	
 	function render() {
-		echo "<select name=\"$this->name\" id=\"$this->name\"", $this->class ? " class=\"$this->class\"" : '', '>';
+		echo "<select name=\"$this->name\" id=\"$this->name\"", empty($this->class) ? '' : " class=\"$this->class\"", '>';
 		echo '<option value="">None</option>';
 		foreach($this->options as $opt) {
 			echo '<option value="',$opt->{$this->optionsId},'"',$opt->{$this->optionsId}==$this->value ? ' selected' : '', '>', 
 				htmlspecialchars($opt->__toString()),
 				'</option>';
 		}
-		echo '</select>';
+		echo '</select>'.(empty($this->flash) ? '' : ' <span class="'.$this->class.'">'.$this->flash.'</span>');
 	}
 	
 	function setOptions($options,$optionsId) {

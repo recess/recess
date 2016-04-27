@@ -7,6 +7,7 @@ Library::import('recess.framework.forms.LabelInput');
 Library::import('recess.framework.forms.DateLabelInput');
 Library::import('recess.framework.forms.BooleanInput');
 Library::import('recess.framework.forms.HiddenInput');
+Library::import('recess.framework.forms.ModelSelectInput');
 
 class Form {
 	protected $name;
@@ -62,6 +63,12 @@ class Form {
 		$newInput .= 'Input';
 		$this->inputs[$name] = new $newInput($name);
 		$this->inputs[$name]->setValue($current->getValue());
+    if(!empty($current->class)) {
+      $this->inputs[$name]->class = $current->class;
+    }
+    if(!empty($current->flash)) {
+      $this->inputs[$name]->flash = $current->flash;
+    }
 	}
 	
 	function fill(array $keyValues) {
